@@ -10,11 +10,13 @@ import java.util.Scanner;
 public class FileUtility {
     private File directory;
     private String filePath;
+    private String fileName;
     private StringBuilder content;
 
-    public FileUtility(File directory, String filePath) {
+    public FileUtility(File directory, String filePath, String fileName) {
         this.directory = directory;
         this.filePath = filePath;
+        this.fileName = fileName;
         this.content = new StringBuilder();
     }
 
@@ -46,7 +48,7 @@ public class FileUtility {
             if (file.isDirectory()) {
                 System.out.println("\nEntering directory: " + file.getName());
 
-                FileUtility subDirectoryUtility = new FileUtility(file, file.getAbsolutePath());
+                FileUtility subDirectoryUtility = new FileUtility(file, file.getAbsolutePath(), fileName);
                 subDirectoryUtility.readFiles();
             } else {
                 try (Scanner fileScanner = new Scanner(file)) {
@@ -73,7 +75,7 @@ public class FileUtility {
     }
 
     public void writeFiles() {
-        String outputPath = filePath + File.separator + "output.txt";
+        String outputPath = filePath + File.separator + fileName + ".txt";
         File outputFile = new File(outputPath);
 
         if (!outputFile.exists()) {
@@ -94,14 +96,13 @@ public class FileUtility {
             writer.write(content.toString());
             writer.newLine();
             System.out.println("\nFile written successfully to: " + outputFile.getAbsolutePath());
+            System.out.println("\nThank you for exploring this tool.");
         } catch (IOException error) {
             System.out.println("An error occurred while trying to write the output file.");
             System.out.println("Possible reasons:");
             System.out.println("- The program does not have permission to write in the specified directory.");
             System.out.println("- There may not be enough disk space available.");
             System.out.println("- The file path might be invalid or corrupted.");
-            System.out.println("\nDetails: " + error.getMessage());
-            error.printStackTrace();
         }
     }
 
