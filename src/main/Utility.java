@@ -38,8 +38,14 @@ public class Utility {
         }
     }
 
-    public boolean validateDirectoryPath(File directory) {
-        FileUtility utility = new FileUtility(directory, directory.getAbsolutePath());
-        return utility.readFiles();
+    public FileUtility validateDirectoryPath(File directory) {
+        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath());
+        boolean isValid = fileUtil.readFiles();
+        
+        if (isValid) {
+            return fileUtil;
+        } else {
+            return null;
+        }
     }
 }
