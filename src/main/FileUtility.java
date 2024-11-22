@@ -6,19 +6,27 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
     private File directory;
     private String filePath;
     private String fileName;
     private String fileExtension;
+    private AtomicInteger fileCount;
     private StringBuilder content;
 
-    public FileUtility(File directory, String filePath, String fileName, String fileExtension) {
+    public FileUtility(
+            File directory,
+            String filePath,
+            String fileName,
+            String fileExtension,
+            AtomicInteger fileCount) {
         this.directory = directory;
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileExtension = fileExtension;
+        this.fileCount = fileCount;
         this.content = new StringBuilder();
     }
 
@@ -45,13 +53,17 @@ public class FileUtility {
             System.out.println("Press Ctrl + C to stop\n");
             return false;
         }
-
         for (File file : files) {
             if (file.isDirectory()) {
                 System.out.println("\nEntering directory: " + file.getName());
 
-                FileUtility subDirectoryUtility = new FileUtility(file, file.getAbsolutePath(), fileName,
-                        fileExtension);
+                FileUtility subDirectoryUtility = new FileUtility(
+                        file,
+                        file.getAbsolutePath(),
+                        fileName,
+                        fileExtension,
+                        fileCount);
+
                 subDirectoryUtility.readFiles();
                 this.content.append(subDirectoryUtility.content);
             } else {
@@ -59,12 +71,21 @@ public class FileUtility {
                     try (Scanner fileScanner = new Scanner(file)) {
                         System.out.println("\nReading file: " + file.getName());
 
+                        int taskNumber = fileCount.incrementAndGet();
+                        String taskNo = "// Task " + taskNumber + "\n\n";
+
                         StringBuilder fileContent = new StringBuilder();
+                        fileContent.append(taskNo);
+
                         while (fileScanner.hasNextLine()) {
                             String line = fileScanner.nextLine();
-                            fileContent.append(line).append(System.lineSeparator());
+
+                            fileContent
+                                    .append(line)
+                                    .append(System.lineSeparator());
                         }
 
+                        fileContent.append("\n\n");
                         this.content.append(fileContent);
                         System.out.println("Added content from: " + file.getName());
                     } catch (FileNotFoundException error) {

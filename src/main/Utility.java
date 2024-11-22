@@ -3,10 +3,12 @@ package main;
 import java.io.File;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Utility {
     private String fileName;
     private String extension;
+    AtomicInteger fileCount = new AtomicInteger(0);
 
     public void setFileNameAndExt(String fileName, String extension) {
         this.fileName = fileName;
@@ -43,7 +45,6 @@ public class Utility {
                     System.out.println(
                             "\nError: Invalid file path! Please double-check and enter a valid path:");
                     System.out.println("Press Ctrl + C to stop\n");
-                    sc.close();
                 }
             }
         } catch (NoSuchElementException | IllegalStateException error) {
@@ -60,7 +61,7 @@ public class Utility {
     }
 
     public FileUtility validateDirectoryPath(File directory) {
-        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath(), fileName, extension);
+        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath(), fileName, extension, fileCount);
         boolean isValid = fileUtil.readFiles();
 
         if (isValid) {
