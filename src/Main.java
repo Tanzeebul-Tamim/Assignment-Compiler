@@ -3,13 +3,19 @@ import java.util.Scanner;
 import java.io.File;
 import main.*;
 
-// Todo - ask file extension, can use both (sequenced, not sequenced), try implementing a method for name, id, assNo, extension input and move them to utility file
+// Todo - can use both (sequenced, not sequenced)
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        Utility utils = new Utility();
         boolean terminated = false;
 
+        String[] validExtensions = {
+                "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
+        };
+
+        String fileExtension = "";
         int id = -1;
         int assignmentNo = -1;
         String name = "";
@@ -20,7 +26,7 @@ public class Main {
             System.out.println("(e.g., Assignment 01_12345678_Joe Brooks)\n");
 
             System.out.println("Please enter your full name:");
-            name = sc.nextLine();
+            name = utils.formatName(sc.nextLine());
 
             while (id == -1) {
                 try {
@@ -45,10 +51,32 @@ public class Main {
                     }
                 } catch (NoSuchElementException error) {
                     System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");
-                    terminated = true;
                     sc.close();
                     System.exit(0);
                     break;
+                }
+            }
+
+            while (fileExtension.isEmpty()) {
+                System.out.println(
+                        "\nPlease enter the required file extension for your assignment (e.g., java, py, cpp):");
+                fileExtension = sc.next().trim().toLowerCase();
+
+                boolean isValid = false;
+                for (String ext : validExtensions) {
+                    if (fileExtension.equals(ext)) {
+                        isValid = true;
+                        break;
+                    }
+                }
+
+                if (isValid) {
+                    fileExtension = "." + fileExtension;
+                } else {
+                    System.out.println("\nInvalid file extension. Allowed extensions are: ");
+                    System.out.println(String.join(", ", validExtensions));
+                    System.out.println("Press Ctrl + C to stop\n");
+                    fileExtension = "";
                 }
             }
 
@@ -75,7 +103,6 @@ public class Main {
                     }
                 } catch (NoSuchElementException error) {
                     System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");
-                    terminated = true;
                     sc.close();
                     System.exit(0);
                     break;
@@ -99,7 +126,7 @@ public class Main {
                 System.out.println("The program was terminated before completion.");
             } else {
                 String fileName = "Assignment " + String.format("%02d", assignmentNo) + "_" + id + "_" + name;
-                Utility utils = new Utility(fileName);
+                utils.setFileNameAndExt(fileName, fileExtension);
 
                 File directory;
                 FileUtility fileUtil;

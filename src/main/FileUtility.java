@@ -11,12 +11,14 @@ public class FileUtility {
     private File directory;
     private String filePath;
     private String fileName;
+    private String fileExtension;
     private StringBuilder content;
 
-    public FileUtility(File directory, String filePath, String fileName) {
+    public FileUtility(File directory, String filePath, String fileName, String fileExtension) {
         this.directory = directory;
         this.filePath = filePath;
         this.fileName = fileName;
+        this.fileExtension = fileExtension;
         this.content = new StringBuilder();
     }
 
@@ -48,11 +50,13 @@ public class FileUtility {
             if (file.isDirectory()) {
                 System.out.println("\nEntering directory: " + file.getName());
 
-                FileUtility subDirectoryUtility = new FileUtility(file, file.getAbsolutePath(), fileName);
+                FileUtility subDirectoryUtility = new FileUtility(file, file.getAbsolutePath(), fileName,
+                        fileExtension);
                 subDirectoryUtility.readFiles();
+                this.content.append(subDirectoryUtility.content);
             } else {
-                try (Scanner fileScanner = new Scanner(file)) {
-                    if (file.getName().endsWith(".java")) {
+                if (file.getName().endsWith(fileExtension)) {
+                    try (Scanner fileScanner = new Scanner(file)) {
                         System.out.println("\nReading file: " + file.getName());
 
                         StringBuilder fileContent = new StringBuilder();
@@ -60,13 +64,15 @@ public class FileUtility {
                             String line = fileScanner.nextLine();
                             fileContent.append(line).append(System.lineSeparator());
                         }
-                        content.append(fileContent);
-                    } else {
-                        System.out.println("\nUnsupported file extension: " + file.getName());
+
+                        this.content.append(fileContent);
+                        System.out.println("Added content from: " + file.getName());
+                    } catch (FileNotFoundException error) {
+                        System.out.println("Error: The file '" + file.getName()
+                                + "' could not be found/accessed!\n");
                     }
-                } catch (FileNotFoundException error) {
-                    System.out.println("Error: The file '" + file.getName()
-                            + "' could not be found/accessed!\n");
+                } else {
+                    System.out.println("\nUnsupported file extension: " + file.getName());
                 }
             }
         }

@@ -5,14 +5,16 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class Utility {
-    public Scanner sc = new Scanner(System.in);
     private String fileName;
+    private String extension;
 
-    public Utility(String fileName) {
+    public void setFileNameAndExt(String fileName, String extension) {
         this.fileName = fileName;
+        this.extension = extension;
     }
 
     public File validateDirectoryPath() {
+        Scanner sc = new Scanner(System.in);
         String filePath;
         File directory;
 
@@ -35,11 +37,13 @@ public class Utility {
                 directory = new File(filePath);
 
                 if (directory.exists() && directory.isDirectory()) {
+                    sc.close();
                     return directory;
                 } else {
                     System.out.println(
                             "\nError: Invalid file path! Please double-check and enter a valid path:");
                     System.out.println("Press Ctrl + C to stop\n");
+                    sc.close();
                 }
             }
         } catch (NoSuchElementException | IllegalStateException error) {
@@ -50,12 +54,13 @@ public class Utility {
             return null;
         } catch (Exception error) {
             System.out.println("\n\nProgram terminated due to an unexpected error.");
+            sc.close();
             return null;
         }
     }
 
     public FileUtility validateDirectoryPath(File directory) {
-        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath(), fileName);
+        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath(), fileName, extension);
         boolean isValid = fileUtil.readFiles();
 
         if (isValid) {
@@ -63,5 +68,22 @@ public class Utility {
         } else {
             return null;
         }
+    }
+
+    public String formatName(String name) {
+        name = name.trim();
+        String[] words = name.split("\\s+");
+        StringBuilder formattedName = new StringBuilder();
+
+        for (String word : words) {
+            if (!word.isEmpty()) {
+                formattedName
+                        .append(Character.toUpperCase(word.charAt(0)))
+                        .append(word.substring(1).toLowerCase())
+                        .append(" ");
+            }
+        }
+
+        return formattedName.toString().trim();
     }
 }
