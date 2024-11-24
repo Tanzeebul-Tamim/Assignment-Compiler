@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
     private File directory;
+    private File[] fileList;
     private String filePath;
     private String fileName;
     private String fileExtension;
@@ -18,11 +19,13 @@ public class FileUtility {
 
     public FileUtility(
             File directory,
+            File[] fileList,
             String filePath,
             String fileName,
             String fileExtension,
             AtomicInteger fileCount) {
         this.directory = directory;
+        this.fileList = fileList;
         this.filePath = filePath;
         this.fileName = fileName;
         this.fileExtension = fileExtension;
@@ -37,28 +40,24 @@ public class FileUtility {
 
         if (files != null) {
             for (File file : files) {
-                fileNames[sequence] = file.getName();
-                sequence++;
+                if (file != null) {
+                    fileNames[sequence] = file.getName();
+                    sequence++;
+                }
             }
         }
 
         return fileNames;
     }
 
-    public boolean readFiles() {
-        File[] files = this.directory.listFiles();
-
-        if (files == null || files.length == 0) {
-            System.out.println("\nError: No files in the directory!");
-            System.out.println("Press Ctrl + C to stop\n");
-            return false;
-        }
-        for (File file : files) {
+    public void readFiles() {
+        for (File file : fileList) {
             if (file.isDirectory()) {
                 System.out.println("\nEntering directory: " + file.getName());
 
                 FileUtility subDirectoryUtility = new FileUtility(
                         file,
+                        file.listFiles(),
                         file.getAbsolutePath(),
                         fileName,
                         fileExtension,
@@ -66,6 +65,7 @@ public class FileUtility {
 
                 subDirectoryUtility.readFiles();
                 this.content.append(subDirectoryUtility.content);
+
             } else {
                 if (file.getName().endsWith(fileExtension)) {
                     try (Scanner fileScanner = new Scanner(file)) {
@@ -88,17 +88,17 @@ public class FileUtility {
                         fileContent.append("\n\n");
                         this.content.append(fileContent);
                         System.out.println("Added content from: " + file.getName());
-                    } catch (FileNotFoundException error) {
+
+                    } catch (FileNotFoundException err) {
                         System.out.println("Error: The file '" + file.getName()
                                 + "' could not be found/accessed!\n");
+
                     }
                 } else {
                     System.out.println("\nUnsupported file extension: " + file.getName());
                 }
             }
         }
-
-        return true;
     }
 
     public void writeFiles() {
@@ -109,8 +109,9 @@ public class FileUtility {
             try {
                 if (outputFile.createNewFile()) {
                     System.out.println("\nCreated new output file in input directory.");
+
                 }
-            } catch (IOException error) {
+            } catch (IOException err) {
                 System.out.println(
                         "\nError: Failed to create file in the input directory. Writing to the current directory...");
 
@@ -124,7 +125,8 @@ public class FileUtility {
             writer.newLine();
             System.out.println("\nFile written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
-        } catch (IOException error) {
+
+        } catch (IOException err) {
             System.out.println("An error occurred while trying to write the output file.");
             System.out.println("Possible reasons:");
             System.out.println("- The program does not have permission to write in the specified directory.");

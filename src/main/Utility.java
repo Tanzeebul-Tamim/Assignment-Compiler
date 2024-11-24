@@ -1,73 +1,41 @@
 package main;
 
-import java.io.File;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Utility {
-    private String fileName;
-    private String extension;
-    AtomicInteger fileCount = new AtomicInteger(0);
 
-    public void setFileNameAndExt(String fileName, String extension) {
-        this.fileName = fileName;
-        this.extension = extension;
+    public void printTitle() {
+        System.out.println("Welcome to the Assignment File Generator Tool!");
+        System.out.println("You can press Ctrl + C anytime to terminate the program.\n");
+        System.out.println(
+                "The output file will be saved using the following naming format: `Assignment XX_Your-ID_Your-Name`");
+        System.out.println("(e.g., Assignment 01_12345678_Joe Brooks)\n");
     }
 
-    public File validateDirectoryPath() {
-        Scanner sc = new Scanner(System.in);
-        String filePath;
-        File directory;
-
-        try {
-            System.out.println(
-                    "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Keeping other files (e.g., unrelated documents, images, or executable files) in the directory may cause unexpected issues while processing the assignments.\n\nFor best results:\n"
-                            +
-                            " - Organize your assignment files in a dedicated folder.\n" +
-                            " - Verify that all files are relevant before proceeding.\n");
-
-            System.out.println("\nPlease copy the file path to your assignment folder and paste here:\n");
-
-            while (true) {
-                filePath = sc.nextLine();
-
-                if (filePath.startsWith("\"") && filePath.endsWith("\"")) {
-                    filePath = filePath.substring(1, filePath.length() - 1);
-                }
-
-                directory = new File(filePath);
-
-                if (directory.exists() && directory.isDirectory()) {
-                    sc.close();
-                    return directory;
-                } else {
-                    System.out.println(
-                            "\nError: Invalid file path! Please double-check and enter a valid path:");
-                    System.out.println("Press Ctrl + C to stop\n");
-                }
-            }
-        } catch (NoSuchElementException | IllegalStateException error) {
+    public void terminate(Scanner sc, boolean intentional) {
+        if (intentional) {
             System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");
-            sc.close();
-            System.exit(0);
-
-            return null;
-        } catch (Exception error) {
-            System.out.println("\n\nProgram terminated due to an unexpected error.");
-            sc.close();
-            return null;
+        } else {
+            System.out.println("\n\nProgram terminated due to an unexpected error!");
         }
+
+        sc.close();
+        System.exit(0);
     }
 
-    public FileUtility validateDirectoryPath(File directory) {
-        FileUtility fileUtil = new FileUtility(directory, directory.getAbsolutePath(), fileName, extension, fileCount);
-        boolean isValid = fileUtil.readFiles();
+    public void detectSequence(String[] fileNames) {
+        Pattern pattern = Pattern.compile("\\d+");
 
-        if (isValid) {
-            return fileUtil;
-        } else {
-            return null;
+        for (String fileName : fileNames) {
+            Matcher matcher = pattern.matcher(fileName);
+
+            if (matcher.find()) {
+                System.out.println("Found " + fileName);
+            } else {
+                System.out.println("Not found " + fileName);
+            }
         }
     }
 
