@@ -1,4 +1,8 @@
-# Assignment Compiler Project - Simplifying Assignment File Compilation
+# Assignment Compiler Project
+
+### **Simplifying Assignment File Compilation:**
+
+<break></break>
 
 Welcome to the **Assignment Compiler Project** repository! This project was mainly focused on BRACU's CSE111 Programming Language II course's assignment submission, to help us ease the task of copying and pasting numerous assignment files into one text file, which is the only valid and accepted format of assignment submission for this course.
 
