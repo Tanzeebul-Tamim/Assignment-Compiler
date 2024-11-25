@@ -47,7 +47,7 @@ public class InputHandler {
     public void id() {
         while (id == 0) {
             try {
-                System.out.println("\nPlease enter your 8-digit ID (e.g., 12345678):");
+                System.out.println("\nPlease enter your 8-digit ID (e.g., 24100000):");
                 String input = sc.nextLine().trim();
 
                 if (input.isEmpty()) {

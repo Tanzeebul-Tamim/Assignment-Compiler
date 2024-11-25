@@ -67,7 +67,7 @@ public class FileUtility {
                         System.out.println("\nReading file: " + file.getName());
 
                         int taskNumber = fileCount.incrementAndGet();
-                        String taskNo = "// Task " + taskNumber + "\n\n";
+                        String taskNo = "// TASK " + taskNumber + "\n\n";
 
                         StringBuilder fileContent = new StringBuilder();
                         fileContent.append(taskNo);

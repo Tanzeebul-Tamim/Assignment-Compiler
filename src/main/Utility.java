@@ -11,7 +11,7 @@ public class Utility {
         System.out.println("You can press Ctrl + C anytime to terminate the program.\n");
         System.out.println(
                 "The output file will be saved using the following naming format: `Assignment XX_Your-ID_Your-Name`");
-        System.out.println("(e.g., Assignment 01_12345678_Joe Brooks)\n");
+        System.out.println("(e.g., Assignment 03_24100000_Joe Brooks.txt)\n");
     }
 
     public void terminate(Scanner sc, boolean intentional) {
