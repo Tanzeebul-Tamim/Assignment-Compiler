@@ -95,15 +95,6 @@ This project is currently a local utility tool and does not have a live deployme
 
 - **Java**:
   - For the core implementation of the utility.
-  - Utilized packages like `java.io.File` and `java.util.Scanner` for file handling and user input.
-- **OOP Design Patterns**: Encapsulated file handling and processing logic for clean and modular code.
-
-- **Command-Line Interface (CLI)**: Provides a simple interface to interact with the tool.
-
-## Used Packages and Technologies
-
-- **Java**:
-  - For the core implementation of the utility.
   - Utilized packages for file handling:
     - **`java.io.File`**: To handle file paths, check file existence, and create files or directories.
     - **`java.util.Scanner`**: For reading file contents.
