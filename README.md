@@ -5,7 +5,7 @@
 
 <break></break>
 
-Welcome to the **Assignment Compiler Project** repository! This project was mainly focused on BRACU's CSE111 Programming Language II course's assignment submission, to help us ease the task of copying and pasting numerous assignment files into one text file, which is the only valid and accepted format of assignment submission for this course.
+Welcome to the **Assignment Compiler Project** repository! This project is mainly focused on BRACU's CSE111 Programming Language II course's assignment submission, to help us ease the task of copying and pasting numerous assignment files into one text file, which is the only valid and accepted format of assignment submission for this course.
 
 This project provides a utility to compile multiple assignment files into a single `.txt` file with proper formatting, adhering to university submission requirements. The program is designed to save time, ensure consistency, and reduce manual errors.
 
@@ -113,10 +113,10 @@ This project is currently a local utility tool and does not have a live deployme
       You’ll be asked to input your name. The program automatically corrects improper naming conventions. For example, if you enter something like `tANzEEBuL       tAMiM    `, it will be converted to the proper format: `Tanzeebul Tamim`.
 
     - **Enter Your ID:**  
-      You’ll then be prompted to enter your 8-digit student ID. The program verifies the ID to ensure a valid ID is provided.
+      You’ll then be prompted to enter your 8-digit student ID (e.g., `24100000`). The program verifies the ID to ensure a valid ID is provided.
 
     - **Enter the Assignment Number:**  
-      You’ll be asked to input the assignment number, such as `3` for Assignment 03.
+      You’ll be asked to input the assignment number, such as `3` for Assignment 03. The program supports assignment numbers ranging from `1` to `15`. Make sure to input a valid number within this range.
 
     - **Enter the Path to Your Assignment Folder:**  
        The program requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
@@ -126,18 +126,21 @@ This project is currently a local utility tool and does not have a live deployme
 
       - Right-click the folder containing your assignment files in your file explorer.
       - Select **"Copy as path"** to copy the full folder path.
+      - (e.g., `C:\Users\Tamim\Documents\Assignments\OOP_Tasks`)
 
       <h4>macOS:</h4>
       <img align=center src="./public/macos-copy-path.jpg" alt="macOS Screenshot" width="500px">
 
       - Right-click the folder containing your assignment files in Finder.
-      - Choose **"Copy 'FolderName' as Pathname"** to copy the path directly.
+      - Select **"Copy 'FolderName' as Pathname"** to copy the path directly.
+      - (e.g., `/Users/tamim/Documents/Assignments/OOP_Tasks`)
 
       <h4>Linux:</h4>
       <img align=center src="./public/linux-copy-path.jpg" alt="Linux Screenshot" width="500px">
 
       - Right-click the folder containing your assignment files in your file manager (e.g., KDE Dolphin).
       - Select **"Copy Location"** to copy the full folder path.
+      - (e.g., `/home/tamim/Documents/Assignments/OOP_Tasks`)
 
       After copying the path, paste it directly into the program's terminal/console.
 
@@ -153,16 +156,16 @@ This project is currently a local utility tool and does not have a live deployme
       3.  **File Naming Sequence:**  
           For best results, name your files in a sequential order, such as:
 
-      - `Task-01`, `Task-02`, etc.
-      - Or `task1`, `task2`, etc.
-      - Even `Task_01`, `Task_02` works.
+          - `Task-01`, `Task-02`, etc.
+          - Or `task1`, `task2`, etc.
+          - Even `Task_01`, `Task_02` works.
 
-      This naming convention allows the program to automatically detect the correct order of tasks.
+          This naming convention allows the program to automatically detect the correct order of tasks.
 
-4.  **Manual Sequencing (If Needed):**  
-    If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
+      4.  **Manual Sequencing (If Needed):**  
+          If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
 
-    > **Note:** In the OOP tasks assigned by our university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
+          > **Note:** In the OOP tasks assigned by our university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
 
 Following these steps will ensure a smooth file compilation process.
 
