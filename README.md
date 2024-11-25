@@ -1,5 +1,5 @@
 <h1 align=center>Assignment Compiler Project</h1>
-<h3 align=center>Simplify your assignment compilation process and make your CSE111 submissions effortless!</h1>
+<h4 align=center>Simplify your assignment compilation process and make your CSE111 submissions effortless!</h4>
 
 ***
 
