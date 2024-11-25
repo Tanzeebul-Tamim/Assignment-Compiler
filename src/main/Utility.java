@@ -25,17 +25,37 @@ public class Utility {
         System.exit(0);
     }
 
+    // Todo
     public void detectSequence(String[] fileNames) {
-        Pattern pattern = Pattern.compile("\\d+");
+        boolean sequenceExists = true;
 
         for (String fileName : fileNames) {
-            Matcher matcher = pattern.matcher(fileName);
+            String pattern = "\\d+";
+            boolean found = false;
 
-            if (matcher.find()) {
-                System.out.println("Found " + fileName);
-            } else {
-                System.out.println("Not found " + fileName);
+            Pattern regex = Pattern.compile(pattern);
+            Matcher matcher = regex.matcher(fileName);
+
+            while (matcher.find()) {
+                String numberStr = matcher.group();
+                int number = Integer.parseInt(numberStr);
+
+                if (number >= 1 && number <= 20) {
+                    found = true;
+                    break;
+                }
             }
+
+            if (!found) {
+                sequenceExists = false;
+                break;
+            }
+        }
+
+        if (sequenceExists) {
+            System.out.println("\nSequence detected automatically:");
+        } else {
+
         }
     }
 

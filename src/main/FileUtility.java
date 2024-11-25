@@ -9,7 +9,6 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
-    private File directory;
     private File[] fileList;
     private String filePath;
     private String fileName;
@@ -18,13 +17,11 @@ public class FileUtility {
     private StringBuilder content;
 
     public FileUtility(
-            File directory,
             File[] fileList,
             String filePath,
             String fileName,
             String fileExtension,
             AtomicInteger fileCount) {
-        this.directory = directory;
         this.fileList = fileList;
         this.filePath = filePath;
         this.fileName = fileName;
@@ -34,12 +31,11 @@ public class FileUtility {
     }
 
     public String[] getFileNames() {
-        File[] files = this.directory.listFiles();
-        String[] fileNames = new String[files.length];
+        String[] fileNames = new String[fileList.length];
         int sequence = 0;
 
-        if (files != null) {
-            for (File file : files) {
+        if (fileList != null) {
+            for (File file : fileList) {
                 if (file != null) {
                     fileNames[sequence] = file.getName();
                     sequence++;
@@ -56,7 +52,6 @@ public class FileUtility {
                 System.out.println("\nEntering directory: " + file.getName());
 
                 FileUtility subDirectoryUtility = new FileUtility(
-                        file,
                         file.listFiles(),
                         file.getAbsolutePath(),
                         fileName,
@@ -64,7 +59,7 @@ public class FileUtility {
                         fileCount);
 
                 subDirectoryUtility.readFiles();
-                this.content.append(subDirectoryUtility.content);
+                content.append(subDirectoryUtility.content);
 
             } else {
                 if (file.getName().endsWith(fileExtension)) {
@@ -86,7 +81,7 @@ public class FileUtility {
                         }
 
                         fileContent.append("\n\n");
-                        this.content.append(fileContent);
+                        content.append(fileContent);
                         System.out.println("Added content from: " + file.getName());
 
                     } catch (FileNotFoundException err) {

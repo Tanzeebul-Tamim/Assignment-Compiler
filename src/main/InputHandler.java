@@ -153,7 +153,7 @@ public class InputHandler {
         }
     }
 
-    public File directoryPath() {
+    public void directoryPath() {
         System.out.println(
                 "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Keeping other files (e.g., unrelated documents, images, or executable files) in the directory may cause unexpected issues while processing the assignments.\n\nFor best results:\n"
                         +
@@ -190,7 +190,7 @@ public class InputHandler {
                         folderPath = directory.getAbsolutePath();
                         this.fileList = fileList;
                         sc.close();
-                        return directory;
+                        return;
                     }
 
                 } else {
