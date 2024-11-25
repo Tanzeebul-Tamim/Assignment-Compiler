@@ -97,7 +97,7 @@ This project is currently a local utility tool and does not have a live deployme
   - For the core implementation of the utility.
   - Utilized packages for file handling:
     - **`java.io.File`**: To handle file paths, check file existence, and create files or directories.
-    - **`java.util.Scanner`**: For reading file contents.
+    - **`java.util.Scanner`**: For reading file contents and accepting user inputs during runtime.
     - **`java.io.FileWriter` and `java.io.BufferedWriter`**: For writing formatted outputs to a text file.
   - **`java.util.concurrent.atomic.AtomicInteger`**: For thread-safe counting of task numbers during file processing.
 
