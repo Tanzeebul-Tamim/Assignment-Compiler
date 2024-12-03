@@ -1,5 +1,6 @@
 package main;
 
+import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,10 +27,12 @@ public class Utility {
     }
 
     // Todo
-    public void detectSequence(String[] fileNames) {
+    public void detectSequence(List<String> fileNames) {
         boolean sequenceExists = true;
+        String[] sequencedFileNames = new String[fileNames.size()];
 
-        for (String fileName : fileNames) {
+        for (int i = 0; i < fileNames.size(); i++) {
+            String fileName = fileNames.get(i);
             String pattern = "\\d+";
             boolean found = false;
 
@@ -41,6 +44,7 @@ public class Utility {
                 int number = Integer.parseInt(numberStr);
 
                 if (number >= 1 && number <= 20) {
+                    sequencedFileNames[number - 1] = fileName;
                     found = true;
                     break;
                 }
@@ -48,14 +52,21 @@ public class Utility {
 
             if (!found) {
                 sequenceExists = false;
+                sequencedFileNames = null;
                 break;
             }
         }
 
         if (sequenceExists) {
-            System.out.println("\nSequence detected automatically:");
-        } else {
+            System.out.println("\nWe have found the following sequence:");
 
+            for (String fileName: sequencedFileNames) {
+                System.out.println(fileName);
+            }
+
+            System.out.println("\nType 'yes' to proceed with the detected sequence or 'no' to manually enter a new sequence.");
+        } else {
+            System.out.println("\nNo sequence detected. Falling back to manual sequencing...");
         }
     }
 

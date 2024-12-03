@@ -2,7 +2,8 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import main.*;
 
-// Todo - can use both (sequenced, not sequenced)
+// Todo - can use both (sequenced, not sequenced), can merge files to be considered as a single task
+// Todo - handle extension validation before sequence detection
 
 public class Main {
     public static void main(String[] args) {
@@ -12,13 +13,8 @@ public class Main {
         AtomicInteger taskSequenceTracker = new AtomicInteger(0);
 
         try {
-            // utils.printTitle();
-            // input.name();
-            // input.id();
-            // input.assignmentNo();
-            // input.fileExtension();
-            // System.out.println();
-            input.directoryPath();
+            utils.printTitle();
+            input.collectInputs();
 
         } catch (NoSuchElementException err) {
             utils.terminate(input.sc, true);
@@ -30,14 +26,14 @@ public class Main {
             fileUtil = new FileUtility(
                     input.fileList,
                     input.folderPath,
-                    // input.getFileName(),
-                    "a",
+                    input.getFileName(),
                     input.fileExtension,
                     taskSequenceTracker);
 
             utils.detectSequence(fileUtil.getFileNames());
-            // fileUtil.readFiles();
-            // fileUtil.writeFiles();
+            
+            fileUtil.readFiles();
+            fileUtil.writeFiles();
 
             input.sc.close();
         }

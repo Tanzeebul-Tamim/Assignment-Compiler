@@ -21,11 +21,26 @@ public class InputHandler {
         this.utils = utils;
     }
 
-    String[] validExtensions = {
+    private String[] validExtensions = {
             "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
     };
 
-    public void name() {
+    public String getFileName() {
+        String studentIdentity = String.format("%02d", assignmentNo) + "_" + id + "_" + name;
+        String fileName = "Assignment " + studentIdentity;
+
+        return fileName;
+    }
+
+    public void collectInputs() {
+        name();
+        id();
+        assignmentNo();
+        fileExtension();
+        directoryPath();
+    }
+
+    private void name() {
         while (name == null) {
             try {
                 System.out.println("Please enter your full name:");
@@ -44,7 +59,7 @@ public class InputHandler {
         }
     }
 
-    public void id() {
+    private void id() {
         while (id == 0) {
             try {
                 System.out.println("\nPlease enter your 8-digit ID (e.g., 24100000):");
@@ -76,7 +91,7 @@ public class InputHandler {
         }
     }
 
-    public void assignmentNo() {
+    private void assignmentNo() {
         while (assignmentNo == 0) {
             try {
                 System.out.println("\nPlease enter the assignment-no (1-15):");
@@ -109,14 +124,7 @@ public class InputHandler {
         }
     }
 
-    public String getFileName() {
-        String studentIdentity = String.format("%02d", assignmentNo) + "_" + id + "_" + name;
-        String fileName = "Assignment " + studentIdentity;
-
-        return fileName;
-    }
-
-    public void fileExtension() {
+    private void fileExtension() {
         while (fileExtension == null) {
             try {
                 System.out.println(
@@ -151,17 +159,19 @@ public class InputHandler {
                 utils.terminate(sc, true);
             }
         }
+
+        System.out.println();
     }
 
-    public void directoryPath() {
+    private void directoryPath() {
         System.out.println(
-                "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Keeping other files (e.g., unrelated documents, images, or executable files) in the directory may cause unexpected issues while processing the assignments.\n\nFor best results:\n"
+                "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Including unrelated files (e.g., images, documents, or executables) or question-provided tester class files in the directory will result in an invalid assignment text file. Submitting such an incorrect file might cause issues with your university assignment submission.\n\nFor best results:\n"
                         +
                         " - Organize your assignment files in a dedicated folder.\n" +
                         " - Verify that all files are relevant before proceeding.\n" +
                         " - If possible, name the files using a sequence (e.g., `Task-01`, `Task-02`, or `Task1`, `Task2`, etc.).\n"
                         +
-                        "   (If the files are not named sequentially, you will be manually asked to sequence them.)\n");
+                        "   (If the files are not named sequentially, or if you are unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
 
         while (true) {
             try {

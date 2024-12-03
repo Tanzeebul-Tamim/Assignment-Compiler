@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
@@ -30,15 +32,24 @@ public class FileUtility {
         this.content = new StringBuilder();
     }
 
-    public String[] getFileNames() {
-        String[] fileNames = new String[fileList.length];
-        int sequence = 0;
+    public List<String> getFileNames() {
+        List<String> fileNames = new ArrayList<>();
 
         if (fileList != null) {
             for (File file : fileList) {
                 if (file != null) {
-                    fileNames[sequence] = file.getName();
-                    sequence++;
+                    if (file.isDirectory()) {
+                        FileUtility subDirectory = new FileUtility(
+                                file.listFiles(),
+                                file.getAbsolutePath(),
+                                fileName,
+                                fileExtension,
+                                fileCount);
+
+                        fileNames.addAll(subDirectory.getFileNames());
+                    } else {
+                        fileNames.add(file.getName());
+                    }
                 }
             }
         }
