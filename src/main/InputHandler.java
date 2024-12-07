@@ -33,10 +33,10 @@ public class InputHandler {
     }
 
     public void collectInputs() {
-        name();
-        id();
-        assignmentNo();
-        fileExtension();
+        // name();
+        // id();
+        // assignmentNo();
+        // fileExtension();
         directoryPath();
     }
 

@@ -13,7 +13,7 @@ public class Main {
         AtomicInteger taskSequenceTracker = new AtomicInteger(0);
 
         try {
-            utils.printTitle();
+            // utils.printTitle();
             input.collectInputs();
 
         } catch (NoSuchElementException err) {
@@ -32,8 +32,8 @@ public class Main {
 
             utils.detectSequence(fileUtil.getFileNames());
             
-            fileUtil.readFiles();
-            fileUtil.writeFiles();
+            // fileUtil.readFiles();
+            // fileUtil.writeFiles();
 
             input.sc.close();
         }
