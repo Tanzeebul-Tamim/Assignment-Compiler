@@ -37,7 +37,7 @@ This project provides a utility to compile multiple assignment files into a sing
   };
   ```
 
-- **_Subdirectory Handling:_** The program can process files in subdirectories, making it easier to handle projects with complex folder structures.
+- **_Subdirectory Handling:_** The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
 
 - **_Automated Task Sequence Detection:_** Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
 
