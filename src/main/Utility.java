@@ -34,9 +34,10 @@ public class Utility {
         System.exit(0);
     }
 
-    public void detectSequence(List<String> fileNames) {
+    public String[][] detectSequence(List<String> fileNames) {
         String[] sequencedFileNames = new String[fileNames.size()];
         String[] remainingFileNames = new String[fileNames.size()];
+        String[][] filteredFileName = new String[2][fileNames.size()];
 
         boolean sequenceExists = true;
         boolean atLeastOneNumeric = false;
@@ -78,7 +79,7 @@ public class Utility {
 
                 for (String fileName : remainingFileNames) {
                     if (fileName != null) {
-                        System.out.printf("%s. %s\n",
+                        System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
                     }
@@ -95,7 +96,7 @@ public class Utility {
 
                 for (String fileName : sequencedFileNames) {
                     if (fileName != null) {
-                        System.out.printf("%s. %s\n",
+                        System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
                     }
@@ -109,14 +110,14 @@ public class Utility {
 
                 for (String fileName : remainingFileNames) {
                     if (fileName != null) {
-                        System.out.printf("%s. %s\n",
+                        System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
                     }
                 }
             }
 
-            System.out.println("\nPlease review the files manually:");
+            System.out.println("\nPlease review the files manually.");
 
         } else {
             if (sequencedFileNames.length > 0) {
@@ -124,13 +125,18 @@ public class Utility {
 
                 for (String fileName : sequencedFileNames) {
                     if (fileName != null) {
-                        System.out.printf("%s. %s\n",
+                        System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
                     }
                 }
             }
         }
+
+        filteredFileName[0] = sequencedFileNames;
+        filteredFileName[1] = remainingFileNames;
+
+        return filteredFileName;
     }
 
     public String formatName(String name) {

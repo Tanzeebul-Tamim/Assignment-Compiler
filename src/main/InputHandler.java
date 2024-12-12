@@ -1,6 +1,7 @@
 package main;
 
 import java.io.File;
+import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -33,15 +34,11 @@ public class InputHandler {
     }
 
     public void collectInputs() {
-        name();
-        id();
-        assignmentNo();
-        fileExtension();
-        directoryPath();
-    }
-
-    public Scanner getScanner() {
-        return sc;
+        this.name();
+        this.id();
+        this.assignmentNo();
+        this.fileExtension();
+        this.directoryPath();
     }
 
     private void name() {
@@ -222,5 +219,32 @@ public class InputHandler {
                 utils.terminate(sc, true);
             }
         }
+    }
+
+    public int handleFileOverwriting(String fileName) throws InputMismatchException {
+        System.out.println("\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
+        System.out.println("Choose an Option:");
+        System.out.println("(1) Overwrite\n(2) Create New Version\n(3) Skip");
+
+        int choice = -1;
+
+        while (choice < 1 || choice > 3) {
+            System.out.print("\nEnter your choice: ");
+
+            try {
+                if (this.sc.hasNextInt()) {
+                    choice = this.sc.nextInt();
+                    System.out.println();
+                } else {
+                    System.out.println();
+                    System.out.println("Please enter a valid option (1, 2, or 3).");
+                    this.sc.nextLine(); // Clear invalid input
+                }
+            } catch (NoSuchElementException err) {
+                utils.terminate(sc, true);
+            }
+        }
+
+        return choice;
     }
 }

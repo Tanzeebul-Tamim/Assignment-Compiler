@@ -11,7 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
-    private Scanner scanner;
+    private InputHandler input;
     private Utility utils;
     private File[] fileList;
     private String filePath;
@@ -21,14 +21,14 @@ public class FileUtility {
     private StringBuilder content;
 
     public FileUtility(
-            Scanner scanner,
+            InputHandler input,
             Utility utils,
             File[] fileList,
             String filePath,
             String fileName,
             String fileExtension,
             AtomicInteger fileCount) {
-        this.scanner = scanner;
+        this.input = input;
         this.utils = utils;
         this.fileList = fileList;
         this.filePath = filePath;
@@ -38,7 +38,7 @@ public class FileUtility {
         this.content = new StringBuilder();
     }
 
-    public FileUtility(File[] fileList, String filePath, String fileExtension) {
+    private FileUtility(File[] fileList, String filePath, String fileExtension) {
         this(null, null, fileList, filePath, null, fileExtension, null);
     }
 
@@ -68,26 +68,37 @@ public class FileUtility {
         return fileNames;
     }
 
-    public void setFileList(String[] fileNames) {
-        List<File> sequencedFiles = new ArrayList<>(); // Store files in the correct sequence
-        traverseAndMatchFiles(this.fileList, fileNames, sequencedFiles);
-        this.fileList = sequencedFiles.toArray(new File[0]); // Update the fileList with the correctly sequenced files
+    public void setFileList(String[][] categorizedFileNames) {
+        File[] sequencedFiles = new File[categorizedFileNames[0].length];
+        File[] nonSequencedFiles = new File[categorizedFileNames[1].length];
+
+        traverseAndMatchFiles(this.fileList, categorizedFileNames[0], sequencedFiles);
+        traverseAndMatchFiles(this.fileList, categorizedFileNames[1], nonSequencedFiles);
+
+        File[] combinedFiles = new File[sequencedFiles.length + nonSequencedFiles.length];
+        System.arraycopy(sequencedFiles, 0, combinedFiles, 0, sequencedFiles.length);
+        System.arraycopy(nonSequencedFiles, 0, combinedFiles, sequencedFiles.length, nonSequencedFiles.length);
+
+        this.fileList = combinedFiles;
     }
 
-    private void traverseAndMatchFiles(File[] files, String[] fileNames, List<File> sequencedFiles) {
-        if (files == null)
+    private void traverseAndMatchFiles(File[] fileList, String[] fileNames, File[] container) {
+        if (fileList == null) {
             return;
+        }
 
-        for (File file : files) {
-            if (file != null) {
-                if (file.isDirectory()) {
-                    // Recursive traversal for subdirectories
-                    traverseAndMatchFiles(file.listFiles(), fileNames, sequencedFiles);
-                } else {
-                    // Match file name with the sequenced array
-                    for (String fileName : fileNames) {
+        int index = 0;
+
+        for (String fileName : fileNames) {
+            if (fileName == null) {
+                break;
+            } else {
+                for (File file : fileList) {
+                    if (file.isDirectory()) {
+                        traverseAndMatchFiles(file.listFiles(), fileNames, container);
+                    } else {
                         if (file.getName().equals(fileName)) {
-                            sequencedFiles.add(file);
+                            container[index++] = file;
                             break;
                         }
                     }
@@ -97,7 +108,7 @@ public class FileUtility {
     }
 
     @SuppressWarnings("unchecked")
-    public List<File>[] validateExt() {
+    private List<File>[] filterFileExt() {
         List<File> fileList = new ArrayList<>();
         List<File> unsupportedFileList = new ArrayList<>();
         List<File>[] separatedFiles = new List[2];
@@ -110,7 +121,7 @@ public class FileUtility {
                             file.getAbsolutePath(),
                             fileExtension);
 
-                    List<File>[] subDirectoryFiles = subDirectory.validateExt();
+                    List<File>[] subDirectoryFiles = subDirectory.filterFileExt();
                     fileList.addAll(subDirectoryFiles[0]);
                     unsupportedFileList.addAll(subDirectoryFiles[1]);
                 } else {
@@ -129,17 +140,17 @@ public class FileUtility {
         return separatedFiles;
     }
 
-    public void validateExtensions() {
-        List<File>[] validFiles = validateExt();
+    public void validateFileExt() {
+        List<File>[] validFiles = filterFileExt();
 
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
 
-        System.out.println("Files with Unsupported extensions:");
+        System.out.println("\nFiles with Unsupported extensions:");
 
         for (File file : unsupportedFiles) {
-            System.out.printf("%s. %s\n",
+            System.out.printf("   %s. %s\n",
                     String.format("%02d", ++fileCount),
                     file.getName(),
                     file.getName());
@@ -165,7 +176,7 @@ public class FileUtility {
 
                 } else {
                     try (Scanner fileScanner = new Scanner(file)) {
-                        System.out.printf("\n %s. Added content from: '%s'",
+                        System.out.printf("   %s. Added content from: '%s'\n",
                                 String.format("%02d", ++fileCount),
                                 file.getName());
 
@@ -201,22 +212,7 @@ public class FileUtility {
         File outputFile = new File(outputPath);
 
         if (outputFile.exists()) {
-            System.out.println("\n\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
-            System.out.println("Options: (1) Overwrite, (2) Create New Version, (3) Skip");
-            int choice = -1;
-
-            while (choice < 1 || choice > 3) {
-                System.out.print("Enter your choice: ");
-
-                if (this.scanner.hasNextInt()) {
-                    choice = this.scanner.nextInt();
-                    System.out.println();
-                } else {
-                    System.out.println();
-                    System.out.println("Please enter a valid option (1, 2, or 3).");
-                    this.scanner.nextLine(); // Clear invalid input
-                }
-            }
+            int choice = input.handleFileOverwriting(fileName);
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");
@@ -240,7 +236,7 @@ public class FileUtility {
 
         try {
             if (outputFile.createNewFile()) {
-                System.out.println("\nCreated new output file in input directory.");
+                System.out.println("\n\nCreated new output file in input directory.");
 
             }
         } catch (IOException err) {
@@ -254,7 +250,7 @@ public class FileUtility {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
             writer.write(content.toString());
             writer.newLine();
-            System.out.println("\nFile written successfully to: " + outputFile.getAbsolutePath());
+            System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
         } catch (IOException err) {
             utils.printError();

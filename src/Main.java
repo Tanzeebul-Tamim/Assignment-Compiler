@@ -3,7 +3,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import main.*;
 
 // Todo - can use both (sequenced, not sequenced), can merge files to be considered as a single task
-// Todo - test new sequenced file array in file utility
 
 public class Main {
     public static void main(String[] args) {
@@ -24,7 +23,7 @@ public class Main {
 
         } finally {
             fileUtil = new FileUtility(
-                    input.getScanner(),
+                    input,
                     utils,
                     input.fileList,
                     input.folderPath,
@@ -32,8 +31,9 @@ public class Main {
                     input.fileExtension,
                     taskSequenceTracker);
 
-            fileUtil.validateExtensions();
-            utils.detectSequence(fileUtil.getFileNames());
+            fileUtil.validateFileExt();
+            fileUtil.setFileList(utils.detectSequence(fileUtil.getFileNames()));
+
             fileUtil.readFiles();
             fileUtil.writeFiles();
 
