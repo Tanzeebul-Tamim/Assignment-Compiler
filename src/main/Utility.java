@@ -40,6 +40,7 @@ public class Utility {
 
         boolean sequenceExists = true;
         boolean atLeastOneNumeric = false;
+        int fileCount = 0;
 
         for (int i = 0, j = 0; i < fileNames.size(); i++) {
             String fileName = fileNames.get(i);
@@ -75,9 +76,11 @@ public class Utility {
             if (remainingFileNames.length > 0) {
                 System.out.println("\nFiles found:");
 
-                for (String name : remainingFileNames) {
-                    if (name != null) {
-                        System.out.println(name);
+                for (String fileName : remainingFileNames) {
+                    if (fileName != null) {
+                        System.out.printf("%s. %s\n",
+                                String.format("%02d", ++fileCount),
+                                fileName);
                     }
                 }
             }
@@ -90,19 +93,25 @@ public class Utility {
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nSequenced files detected:");
 
-                for (String name : sequencedFileNames) {
-                    if (name != null) {
-                        System.out.println(name);
+                for (String fileName : sequencedFileNames) {
+                    if (fileName != null) {
+                        System.out.printf("%s. %s\n",
+                                String.format("%02d", ++fileCount),
+                                fileName);
                     }
                 }
             }
 
+            fileCount = 0;
+
             if (remainingFileNames.length > 0) {
                 System.out.println("\nRemaining jumbled files:");
 
-                for (String name : remainingFileNames) {
-                    if (name != null) {
-                        System.out.println(name);
+                for (String fileName : remainingFileNames) {
+                    if (fileName != null) {
+                        System.out.printf("%s. %s\n",
+                                String.format("%02d", ++fileCount),
+                                fileName);
                     }
                 }
             }
@@ -113,9 +122,11 @@ public class Utility {
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nWe have found the following sequence:");
 
-                for (String name : sequencedFileNames) {
-                    if (name != null) {
-                        System.out.println(name);
+                for (String fileName : sequencedFileNames) {
+                    if (fileName != null) {
+                        System.out.printf("%s. %s\n",
+                                String.format("%02d", ++fileCount),
+                                fileName);
                     }
                 }
             }

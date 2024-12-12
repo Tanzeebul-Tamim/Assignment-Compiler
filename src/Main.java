@@ -32,7 +32,7 @@ public class Main {
                     input.fileExtension,
                     taskSequenceTracker);
 
-            fileUtil.validateExtension();
+            fileUtil.validateExtensions();
             utils.detectSequence(fileUtil.getFileNames());
             fileUtil.readFiles();
             fileUtil.writeFiles();

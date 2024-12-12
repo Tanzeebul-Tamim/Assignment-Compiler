@@ -38,6 +38,10 @@ public class FileUtility {
         this.content = new StringBuilder();
     }
 
+    public FileUtility(File[] fileList, String filePath, String fileExtension) {
+        this(null, null, fileList, filePath, null, fileExtension, null);
+    }
+
     public List<String> getFileNames() {
         List<String> fileNames = new ArrayList<>();
 
@@ -47,13 +51,9 @@ public class FileUtility {
                     if (file.isDirectory()) {
                         // Recursively add files from subdirectories
                         FileUtility subDirectory = new FileUtility(
-                                this.scanner,
-                                this.utils,
                                 file.listFiles(),
                                 file.getAbsolutePath(),
-                                fileName,
-                                fileExtension,
-                                fileCount);
+                                fileExtension);
 
                         // Add the file names found in the subdirectory
                         fileNames.addAll(subDirectory.getFileNames());
@@ -96,44 +96,80 @@ public class FileUtility {
         }
     }
 
-    public void validateExtension() {
-        File[] fileList = new File[this.fileList.length];
-        int count = 0;
+    @SuppressWarnings("unchecked")
+    public List<File>[] validateExt() {
+        List<File> fileList = new ArrayList<>();
+        List<File> unsupportedFileList = new ArrayList<>();
+        List<File>[] separatedFiles = new List[2];
 
         for (File file : this.fileList) {
-            if (file.getName().endsWith(fileExtension)) {
-                fileList[count++] = file;
-            } else {
-                System.out.println("Skipping file:" + file.getName() + ": unsupported extension.");
+            if (file != null) {
+                if (file.isDirectory()) {
+                    FileUtility subDirectory = new FileUtility(
+                            file.listFiles(),
+                            file.getAbsolutePath(),
+                            fileExtension);
+
+                    List<File>[] subDirectoryFiles = subDirectory.validateExt();
+                    fileList.addAll(subDirectoryFiles[0]);
+                    unsupportedFileList.addAll(subDirectoryFiles[1]);
+                } else {
+                    if (file.getName().endsWith(fileExtension)) {
+                        fileList.add(file);
+                    } else {
+                        unsupportedFileList.add(file);
+                    }
+                }
             }
         }
 
-        this.fileList = fileList;
+        separatedFiles[0] = fileList;
+        separatedFiles[1] = unsupportedFileList;
+
+        return separatedFiles;
+    }
+
+    public void validateExtensions() {
+        List<File>[] validFiles = validateExt();
+
+        this.fileList = validFiles[0].toArray(new File[0]);
+        File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
+        int fileCount = 0;
+
+        System.out.println("Files with Unsupported extensions:");
+
+        for (File file : unsupportedFiles) {
+            System.out.printf("%s. %s\n",
+                    String.format("%02d", ++fileCount),
+                    file.getName(),
+                    file.getName());
+        }
     }
 
     public void readFiles() {
+        System.out.println("\nReading files: ");
+        int fileCount = 0;
+
         for (File file : this.fileList) {
             if (file != null) {
                 if (file.isDirectory()) {
                     System.out.println("\nEntering directory: " + file.getName());
 
                     FileUtility subDirectoryUtility = new FileUtility(
-                            this.scanner,
-                            this.utils,
                             file.listFiles(),
                             file.getAbsolutePath(),
-                            fileName,
-                            fileExtension,
-                            fileCount);
+                            fileExtension);
 
                     subDirectoryUtility.readFiles();
                     content.append(subDirectoryUtility.content);
 
                 } else {
                     try (Scanner fileScanner = new Scanner(file)) {
-                        System.out.println("\nReading file: " + file.getName());
+                        System.out.printf("\n %s. Added content from: '%s'",
+                                String.format("%02d", ++fileCount),
+                                file.getName());
 
-                        int taskNumber = fileCount.incrementAndGet();
+                        int taskNumber = this.fileCount.incrementAndGet();
                         String taskNo = "// TASK " + taskNumber + "\n\n";
 
                         StringBuilder fileContent = new StringBuilder();
@@ -149,7 +185,6 @@ public class FileUtility {
 
                         fileContent.append("\n\n");
                         content.append(fileContent);
-                        System.out.println("Added content from: " + file.getName());
 
                     } catch (FileNotFoundException err) {
                         System.out.println("Error: The file '" + file.getName()
@@ -166,8 +201,8 @@ public class FileUtility {
         File outputFile = new File(outputPath);
 
         if (outputFile.exists()) {
-            System.out.println("\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
-            System.out.println("Options: [1] Overwrite, [2] Create New Version, [3] Skip");
+            System.out.println("\n\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
+            System.out.println("Options: (1) Overwrite, (2) Create New Version, (3) Skip");
             int choice = -1;
 
             while (choice < 1 || choice > 3) {
