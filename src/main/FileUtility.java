@@ -96,25 +96,40 @@ public class FileUtility {
         }
     }
 
-    public void readFiles() {
-        for (File file : fileList) {
-            if (file.isDirectory()) {
-                System.out.println("\nEntering directory: " + file.getName());
+    public void validateExtension() {
+        File[] fileList = new File[this.fileList.length];
+        int count = 0;
 
-                FileUtility subDirectoryUtility = new FileUtility(
-                        this.scanner,
-                        this.utils,
-                        file.listFiles(),
-                        file.getAbsolutePath(),
-                        fileName,
-                        fileExtension,
-                        fileCount);
-
-                subDirectoryUtility.readFiles();
-                content.append(subDirectoryUtility.content);
-
+        for (File file : this.fileList) {
+            if (file.getName().endsWith(fileExtension)) {
+                fileList[count++] = file;
             } else {
-                if (file.getName().endsWith(fileExtension)) {
+                System.out.println("Skipping file:" + file.getName() + ": unsupported extension.");
+            }
+        }
+
+        this.fileList = fileList;
+    }
+
+    public void readFiles() {
+        for (File file : this.fileList) {
+            if (file != null) {
+                if (file.isDirectory()) {
+                    System.out.println("\nEntering directory: " + file.getName());
+
+                    FileUtility subDirectoryUtility = new FileUtility(
+                            this.scanner,
+                            this.utils,
+                            file.listFiles(),
+                            file.getAbsolutePath(),
+                            fileName,
+                            fileExtension,
+                            fileCount);
+
+                    subDirectoryUtility.readFiles();
+                    content.append(subDirectoryUtility.content);
+
+                } else {
                     try (Scanner fileScanner = new Scanner(file)) {
                         System.out.println("\nReading file: " + file.getName());
 
@@ -141,8 +156,6 @@ public class FileUtility {
                                 + "' could not be found/accessed!\n");
 
                     }
-                } else {
-                    System.out.println("\nUnsupported file extension: " + file.getName());
                 }
             }
         }
@@ -162,7 +175,9 @@ public class FileUtility {
 
                 if (this.scanner.hasNextInt()) {
                     choice = this.scanner.nextInt();
+                    System.out.println();
                 } else {
+                    System.out.println();
                     System.out.println("Please enter a valid option (1, 2, or 3).");
                     this.scanner.nextLine(); // Clear invalid input
                 }

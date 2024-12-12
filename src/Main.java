@@ -3,8 +3,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import main.*;
 
 // Todo - can use both (sequenced, not sequenced), can merge files to be considered as a single task
-// Todo - handle extension validation before sequence detection
-// Todo - handle same file name case error
 // Todo - test new sequenced file array in file utility
 
 public class Main {
@@ -34,16 +32,12 @@ public class Main {
                     input.fileExtension,
                     taskSequenceTracker);
 
+            fileUtil.validateExtension();
             utils.detectSequence(fileUtil.getFileNames());
-
-            // ! for (String name : fileUtil.getFileNames()) {
-            // System.out.println(name);
-            // }
-
             fileUtil.readFiles();
             fileUtil.writeFiles();
 
-            // input.sc.close();
+            input.sc.close();
         }
     }
 }
