@@ -4,6 +4,8 @@ import main.*;
 
 // Todo - can use both (sequenced, not sequenced), can merge files to be considered as a single task
 // Todo - handle extension validation before sequence detection
+// Todo - handle same file name case error
+// Todo - test new sequenced file array in file utility
 
 public class Main {
     public static void main(String[] args) {
@@ -13,7 +15,7 @@ public class Main {
         AtomicInteger taskSequenceTracker = new AtomicInteger(0);
 
         try {
-            // utils.printTitle();
+            utils.printTitle();
             input.collectInputs();
 
         } catch (NoSuchElementException err) {
@@ -24,6 +26,8 @@ public class Main {
 
         } finally {
             fileUtil = new FileUtility(
+                    input.getScanner(),
+                    utils,
                     input.fileList,
                     input.folderPath,
                     input.getFileName(),
@@ -31,11 +35,15 @@ public class Main {
                     taskSequenceTracker);
 
             utils.detectSequence(fileUtil.getFileNames());
-            
-            // fileUtil.readFiles();
-            // fileUtil.writeFiles();
 
-            input.sc.close();
+            // ! for (String name : fileUtil.getFileNames()) {
+            // System.out.println(name);
+            // }
+
+            fileUtil.readFiles();
+            fileUtil.writeFiles();
+
+            // input.sc.close();
         }
     }
 }

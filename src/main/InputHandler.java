@@ -33,11 +33,15 @@ public class InputHandler {
     }
 
     public void collectInputs() {
-        // name();
-        // id();
-        // assignmentNo();
-        // fileExtension();
+        name();
+        id();
+        assignmentNo();
+        fileExtension();
         directoryPath();
+    }
+
+    public Scanner getScanner() {
+        return sc;
     }
 
     private void name() {
@@ -199,23 +203,20 @@ public class InputHandler {
                     } else {
                         folderPath = directory.getAbsolutePath();
                         this.fileList = fileList;
-                        sc.close();
                         return;
                     }
 
                 } else {
-                    if (!directory.isDirectory()) {
-                        System.out.println("\nError: Invalid input. The provided path is not a directory.");
-
+                    if (!directory.exists()) {
+                        System.out.println("\nError: The provided path does not exist.");
                     } else {
-                        System.out.println(
-                                "\nError: Invalid input. Please double-check and enter a valid path.");
+                        System.out.println("\nError: The provided path is not a valid directory.");
                     }
-                }
 
+                }
             } catch (NumberFormatException err) {
                 System.out
-                        .println("\nError: Invalid input. Invalid input. Please double-check and enter a valid path.");
+                        .println("\nError: Invalid input. Please double-check and enter a valid path.");
 
             } catch (NoSuchElementException err) {
                 utils.terminate(sc, true);

@@ -15,6 +15,14 @@ public class Utility {
         System.out.println("(e.g., Assignment 03_24100000_Joe Brooks.txt)\n");
     }
 
+    public void printError() {
+        System.out.println("An error occurred while trying to write the output file.");
+        System.out.println("Possible reasons:");
+        System.out.println("- The program does not have permission to write in the specified directory.");
+        System.out.println("- There may not be enough disk space available.");
+        System.out.println("- The file path might be invalid or corrupted.");
+    }
+
     public void terminate(Scanner sc, boolean intentional) {
         if (intentional) {
             System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");
@@ -26,12 +34,14 @@ public class Utility {
         System.exit(0);
     }
 
-    // Todo
     public void detectSequence(List<String> fileNames) {
-        boolean sequenceExists = true;
         String[] sequencedFileNames = new String[fileNames.size()];
+        String[] remainingFileNames = new String[fileNames.size()];
 
-        for (int i = 0; i < fileNames.size(); i++) {
+        boolean sequenceExists = true;
+        boolean atLeastOneNumeric = false;
+
+        for (int i = 0, j = 0; i < fileNames.size(); i++) {
             String fileName = fileNames.get(i);
             String pattern = "\\d+";
             boolean found = false;
@@ -43,30 +53,72 @@ public class Utility {
                 String numberStr = matcher.group();
                 int number = Integer.parseInt(numberStr);
 
-                if (number >= 1 && number <= 20) {
+                if (number >= 1 && number <= fileNames.size()) {
                     sequencedFileNames[number - 1] = fileName;
                     found = true;
+                    atLeastOneNumeric = true;
                     break;
                 }
             }
 
             if (!found) {
                 sequenceExists = false;
-                sequencedFileNames = null;
-                break;
+                remainingFileNames[j++] = fileName;
             }
         }
 
-        if (sequenceExists) {
-            System.out.println("\nWe have found the following sequence:");
+        if (!atLeastOneNumeric) {
+            sequencedFileNames = null;
 
-            for (String fileName: sequencedFileNames) {
-                System.out.println(fileName);
+            System.out.println("\nNo sequence detected.");
+
+            if (remainingFileNames.length > 0) {
+                System.out.println("\nFiles found:");
+
+                for (String name : remainingFileNames) {
+                    if (name != null) {
+                        System.out.println(name);
+                    }
+                }
             }
 
-            System.out.println("\nType 'yes' to proceed with the detected sequence or 'no' to manually enter a new sequence.");
+            System.out.println("\nPlease review the files manually:");
+
+        } else if (!sequenceExists) {
+            System.out.println("\nNot all files follow the sequence.");
+
+            if (sequencedFileNames.length > 0) {
+                System.out.println("\nSequenced files detected:");
+
+                for (String name : sequencedFileNames) {
+                    if (name != null) {
+                        System.out.println(name);
+                    }
+                }
+            }
+
+            if (remainingFileNames.length > 0) {
+                System.out.println("\nRemaining jumbled files:");
+
+                for (String name : remainingFileNames) {
+                    if (name != null) {
+                        System.out.println(name);
+                    }
+                }
+            }
+
+            System.out.println("\nPlease review the files manually:");
+
         } else {
-            System.out.println("\nNo sequence detected. Falling back to manual sequencing...");
+            if (sequencedFileNames.length > 0) {
+                System.out.println("\nWe have found the following sequence:");
+
+                for (String name : sequencedFileNames) {
+                    if (name != null) {
+                        System.out.println(name);
+                    }
+                }
+            }
         }
     }
 

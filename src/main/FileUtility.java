@@ -5,12 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
-import java.util.Scanner;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
+    private Scanner scanner;
+    private Utility utils;
     private File[] fileList;
     private String filePath;
     private String fileName;
@@ -19,11 +21,15 @@ public class FileUtility {
     private StringBuilder content;
 
     public FileUtility(
+            Scanner scanner,
+            Utility utils,
             File[] fileList,
             String filePath,
             String fileName,
             String fileExtension,
             AtomicInteger fileCount) {
+        this.scanner = scanner;
+        this.utils = utils;
         this.fileList = fileList;
         this.filePath = filePath;
         this.fileName = fileName;
@@ -39,15 +45,20 @@ public class FileUtility {
             for (File file : fileList) {
                 if (file != null) {
                     if (file.isDirectory()) {
+                        // Recursively add files from subdirectories
                         FileUtility subDirectory = new FileUtility(
+                                this.scanner,
+                                this.utils,
                                 file.listFiles(),
                                 file.getAbsolutePath(),
                                 fileName,
                                 fileExtension,
                                 fileCount);
 
+                        // Add the file names found in the subdirectory
                         fileNames.addAll(subDirectory.getFileNames());
                     } else {
+                        // Add file name if it's a file
                         fileNames.add(file.getName());
                     }
                 }
@@ -57,12 +68,42 @@ public class FileUtility {
         return fileNames;
     }
 
+    public void setFileList(String[] fileNames) {
+        List<File> sequencedFiles = new ArrayList<>(); // Store files in the correct sequence
+        traverseAndMatchFiles(this.fileList, fileNames, sequencedFiles);
+        this.fileList = sequencedFiles.toArray(new File[0]); // Update the fileList with the correctly sequenced files
+    }
+
+    private void traverseAndMatchFiles(File[] files, String[] fileNames, List<File> sequencedFiles) {
+        if (files == null)
+            return;
+
+        for (File file : files) {
+            if (file != null) {
+                if (file.isDirectory()) {
+                    // Recursive traversal for subdirectories
+                    traverseAndMatchFiles(file.listFiles(), fileNames, sequencedFiles);
+                } else {
+                    // Match file name with the sequenced array
+                    for (String fileName : fileNames) {
+                        if (file.getName().equals(fileName)) {
+                            sequencedFiles.add(file);
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void readFiles() {
         for (File file : fileList) {
             if (file.isDirectory()) {
                 System.out.println("\nEntering directory: " + file.getName());
 
                 FileUtility subDirectoryUtility = new FileUtility(
+                        this.scanner,
+                        this.utils,
                         file.listFiles(),
                         file.getAbsolutePath(),
                         fileName,
@@ -111,19 +152,53 @@ public class FileUtility {
         String outputPath = filePath + File.separator + fileName + ".txt";
         File outputFile = new File(outputPath);
 
-        if (!outputFile.exists()) {
-            try {
-                if (outputFile.createNewFile()) {
-                    System.out.println("\nCreated new output file in input directory.");
+        if (outputFile.exists()) {
+            System.out.println("\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
+            System.out.println("Options: [1] Overwrite, [2] Create New Version, [3] Skip");
+            int choice = -1;
 
+            while (choice < 1 || choice > 3) {
+                System.out.print("Enter your choice: ");
+
+                if (this.scanner.hasNextInt()) {
+                    choice = this.scanner.nextInt();
+                } else {
+                    System.out.println("Please enter a valid option (1, 2, or 3).");
+                    this.scanner.nextLine(); // Clear invalid input
                 }
-            } catch (IOException err) {
-                System.out.println(
-                        "\nError: Failed to create file in the input directory. Writing to the current directory...");
-
-                outputPath = System.getProperty("user.dir") + File.separator + "output.txt";
-                outputFile = new File(outputPath);
             }
+
+            if (choice == 1) {
+                System.out.println("Overwriting the existing file...");
+
+            } else if (choice == 2) {
+                int version = 0;
+
+                do {
+                    String finalPath = filePath + File.separator + fileName + "(" + (++version) + ")" + ".txt";
+                    outputFile = new File(finalPath);
+
+                } while (outputFile.exists());
+
+                System.out.println("Creating a new version of the file: " + outputFile.getName());
+
+            } else {
+                System.out.println("Skipping the file writing operation.");
+                return;
+            }
+        }
+
+        try {
+            if (outputFile.createNewFile()) {
+                System.out.println("\nCreated new output file in input directory.");
+
+            }
+        } catch (IOException err) {
+            System.out.println(
+                    "\nError: Failed to create file in the input directory. Writing to the current directory...");
+
+            outputPath = System.getProperty("user.dir") + File.separator + "output.txt";
+            outputFile = new File(outputPath);
         }
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
@@ -131,14 +206,8 @@ public class FileUtility {
             writer.newLine();
             System.out.println("\nFile written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
-
         } catch (IOException err) {
-            System.out.println("An error occurred while trying to write the output file.");
-            System.out.println("Possible reasons:");
-            System.out.println("- The program does not have permission to write in the specified directory.");
-            System.out.println("- There may not be enough disk space available.");
-            System.out.println("- The file path might be invalid or corrupted.");
+            utils.printError();
         }
     }
-
 }
