@@ -118,35 +118,29 @@ public class InputHandler {
 
     private void fileExtension() {
         while (fileExtension == null) {
-            try {
-                System.out.println(
-                        "\nPlease enter the required file extension for your assignment (e.g., java, py, cpp):");
-                String input = sc.nextLine().trim();
+            System.out.println(
+                    "\nPlease enter the required file extension for your assignment (e.g., java, py, cpp):");
+            String input = sc.nextLine().trim();
 
-                if (input.isEmpty()) {
-                    System.out.println("Error: File extension cannot be left empty.");
-                    continue;
+            if (input.isEmpty()) {
+                System.out.println("Error: File extension cannot be left empty.");
+                continue;
+            }
+
+            boolean isValid = false;
+            for (String ext : validExtensions) {
+                if (input.equals(ext)) {
+                    isValid = true;
+                    break;
                 }
+            }
 
-                boolean isValid = false;
-                for (String ext : validExtensions) {
-                    if (input.equals(ext)) {
-                        isValid = true;
-                        break;
-                    }
-                }
+            if (isValid) {
+                fileExtension = "." + input;
 
-                if (isValid) {
-                    fileExtension = "." + input;
-
-                } else {
-                    System.out.println("\nError: Invalid Input! Allowed extensions are:");
-                    System.out.println("       " + String.join(", ", validExtensions));
-                }
-
-            } catch (NumberFormatException err) {
-                System.out.println("\nError: Invalid Input! Enter a valid extension.");
-
+            } else {
+                System.out.println("\nError: Invalid Input! Allowed extensions are:");
+                System.out.println("       " + String.join(", ", validExtensions));
             }
         }
 
@@ -200,7 +194,7 @@ public class InputHandler {
                     }
 
                 }
-            } catch (NumberFormatException err) {
+            } catch (IllegalArgumentException err) {
                 System.out
                         .println("\nError: Invalid Input! Please double-check and enter a valid path.");
 
@@ -209,84 +203,113 @@ public class InputHandler {
     }
 
     private void choiceCountLoop(int choiceCount) {
-        for (int i = 1; i <= choiceCount; i++) {
-            if (i == 1) {
-                System.out.print("(");
-            }
+        if (choiceCount > 5) {
+            System.out.printf("(1-%d).\n", choiceCount);
 
-            if (i == choiceCount) {
-                System.out.printf("or %d):\n", i);
-            } else {
-                System.out.printf("%d, ", i);
+        } else {
+            for (int i = 1; i <= choiceCount; i++) {
+                if (i == 1) {
+                    System.out.print("(");
+                }
+
+                if (i == choiceCount) {
+                    System.out.printf("or %d).\n", i);
+                } else {
+                    System.out.printf("%d, ", i);
+                }
             }
         }
     }
 
-    public int getUserChoice(
+    public String getUserChoice(
             String prompt1,
             String prompt2,
-            int choiceCount,
+            int fileCount,
+            String[] keywords,
             String... choices)
             throws InputMismatchException,
             NoSuchElementException {
 
         int choice = 0;
+        String input = "";
 
-        if (choices.length != choiceCount) {
-            throw new IllegalArgumentException(
-                    "The number of provided choices does not match the expected choice count.");
-        }
-
-        System.out.printf("\n%s\n\n", prompt1);
+        System.out.printf("\n%s\n", prompt1);
 
         if (prompt2 != null) {
             System.out.printf("%s\n", prompt2);
         }
 
-        for (int i = 0; i < choiceCount; i++) {
-            System.out.printf("(%d) %s", i + 1, choices[i]);
+        if (choices.length > 0) {
+            for (int i = 0; i < choices.length; i++) {
+                System.out.printf("(%d) %s", i + 1, choices[i]);
 
-            if (i != choiceCount - 1) {
-                System.out.println();
+                if (i != choices.length - 1) {
+                    System.out.println();
+                }
             }
         }
 
         while (choice == 0) {
             try {
-                System.out.print("\n\nPlease enter your choice ");
-                this.choiceCountLoop(choiceCount);
+                if (choices.length > 0) {
+                    System.out.print("\nEnter your choice ");
+                    this.choiceCountLoop(choices.length);
+                } else {
+                    System.out.print("Enter a number within the valid range ");
+                    this.choiceCountLoop(fileCount);
+                }
 
-                String input = sc.nextLine().trim();
+                input = sc.nextLine().trim();
 
                 if (input.isEmpty()) {
                     System.out.println("Error: You must pick one of the options.");
                     continue;
                 }
 
+                if (keywords != null) {
+                    for (int i = 0; i < keywords.length; i++) {
+                        String keyword = keywords[i];
+
+                        if (input.equalsIgnoreCase(keyword)) {
+                            return keyword;
+                        }
+                    }
+                }
+
                 if (!input.matches("\\d+")) {
                     System.out
-                            .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
-                    this.choiceCountLoop(choiceCount);
+                            .print("\nError: Invalid Input! Please enter a numeric value.");
+                    this.choiceCountLoop(choices.length);
                     continue;
                 }
 
                 choice = Integer.parseInt(input);
 
-                if (choice < 1 || choice > choiceCount) {
-                    System.out
-                            .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
-                    this.choiceCountLoop(choiceCount);
-                    choice = 0;
+                if (choices.length > 0) {
+                    if (choice < 1 || choice > choices.length) {
+                        System.out
+                                .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
+                        this.choiceCountLoop(choices.length);
+                        choice = 0;
+                    }
+                } else {
+                    if (choice < 1 || choice > fileCount) {
+                        System.out
+                                .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
+                        this.choiceCountLoop(fileCount);
+                        choice = 0;
+                    }
                 }
 
                 System.out.println();
 
-            } catch (NumberFormatException err) {
-                System.out.printf("\nError: Invalid Input! Enter a number between 1 to %d\n", choiceCount);
+            } catch (InputMismatchException | IllegalArgumentException rr) {
+                System.out.printf("\nError: Input out of range! Enter a number between 1 to %d\n", choices.length);
             }
+
         }
 
-        return choice;
+        return input;
     }
 
 }

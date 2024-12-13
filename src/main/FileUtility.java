@@ -219,10 +219,11 @@ public class FileUtility {
         File outputFile = new File(outputPath);
 
         if (outputFile.exists()) {
-            String prompt1 = "Error: A file with the name '" + this.fileName + ".txt' already exists in the directory.";
+            String prompt1 = "Error: A file with the name '" + this.fileName + ".txt' already exists in the directory.\n";
             String prompt2 = "Choose and Option:";
 
-            int choice = input.getUserChoice(prompt1, prompt2, 3, "Overwrite", "Create New Version", "Skip");
+            int choice = Integer
+                    .parseInt(input.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version", "Skip"));
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");
