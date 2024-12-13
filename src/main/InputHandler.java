@@ -13,19 +13,21 @@ public class InputHandler {
     public String folderPath;
 
     public File directory;
-    public File[] fileList;
+    public File[] fileList; // Stores all the files found in the provided directory
 
-    private Utility utils;
+    private Utility utils; // Utility class reference
     public Scanner sc = new Scanner(System.in);
 
     public InputHandler(Utility utils) {
         this.utils = utils;
     }
 
+    // Valid file extensions
     private String[] validExtensions = {
             "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
     };
 
+    // Method to generate output file name
     public String getFileName() {
         String studentIdentity = String.format("%02d", assignmentNo) + "_" + id + "_" + name;
         String fileName = "Assignment " + studentIdentity;
@@ -33,6 +35,7 @@ public class InputHandler {
         return fileName;
     }
 
+    // Method to collect all user information
     public void collectInputs() {
         this.name();
         this.id();
@@ -41,9 +44,10 @@ public class InputHandler {
         this.directoryPath();
     }
 
+    // Collects user name
     private void name() {
         while (name == null) {
-            System.out.println("Please enter your full name:");
+            System.out.println("Please enter your full name:"); // Formats name
             String input = utils.formatName(sc.nextLine());
 
             if (input.isEmpty()) {
@@ -55,6 +59,7 @@ public class InputHandler {
         }
     }
 
+    // Collects user id
     private void id() {
         while (id == 0) {
             try {
@@ -85,6 +90,7 @@ public class InputHandler {
         }
     }
 
+    // Collects assignment no
     private void assignmentNo() {
         while (assignmentNo == 0) {
             try {
@@ -116,6 +122,7 @@ public class InputHandler {
         }
     }
 
+    // Collects the required file extension
     private void fileExtension() {
         while (fileExtension == null) {
             System.out.println(
@@ -147,6 +154,7 @@ public class InputHandler {
         System.out.println();
     }
 
+    // Collects the directory path where the assignment files are located
     private void directoryPath() {
         System.out.println(
                 "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Including unrelated files (e.g., images, documents, or executables) or question-provided tester class files in the directory will result in an invalid assignment text file. Submitting such an incorrect file might cause issues with your university assignment submission.\n\nFor best results:\n"
@@ -202,6 +210,7 @@ public class InputHandler {
         }
     }
 
+    // Method to display a user prompt for selecting multiple input options
     private void choiceCountLoop(int choiceCount) {
         if (choiceCount > 5) {
             System.out.printf("(1-%d).\n", choiceCount);
@@ -221,6 +230,7 @@ public class InputHandler {
         }
     }
 
+    // Method to collect user input from multiple input options
     public String getUserChoice(
             String prompt1,
             String prompt2,
@@ -269,6 +279,7 @@ public class InputHandler {
                     continue;
                 }
 
+                // Checking for the specified Keywords for specified actions
                 if (keywords != null) {
                     for (int i = 0; i < keywords.length; i++) {
                         String keyword = keywords[i];
