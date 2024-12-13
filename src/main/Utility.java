@@ -53,13 +53,24 @@ public class Utility {
         this.printUserPrompt();
 
         String[] sequencedFileNames = new String[fileNames.length];
-        // String[] keywords = { "Skip", "Previous", "Restart", "Merge" };
-        String[] keywords = { "Skip", "Previous", "Restart" };
+        String[] keywords = { "Skip", "Previous", "Restart", "Merge" };
 
-        for (int i = 0; i < fileNames.length; i++) {
+        int count = 0;
+
+        traverseFileNames: for (int i = 0; i < fileNames.length; i++) {
             String fileName = fileNames[i];
 
             if (fileName != null) {
+                if (count == fileNames.length - 1) {
+                    // Automatically place the last file in the last remaining slot
+                    for (int j = 0; j < sequencedFileNames.length; j++) {
+                        if (sequencedFileNames[j] == null) {
+                            sequencedFileNames[j] = fileName; // Assign the last file to the empty slot
+                            break traverseFileNames;
+                        }
+                    }
+                }
+
                 String prompt = "Please assign a sequence number to the file '" + fileName + "':";
 
                 String choice = input.getUserChoice(prompt, null, fileNames.length, keywords);
@@ -68,12 +79,14 @@ public class Utility {
                 try {
                     choiceInt = Integer.parseInt(choice);
                     sequencedFileNames[choiceInt - 1] = fileName;
+                    count++;
 
                 } catch (NumberFormatException err) {
                     choice = choice.toLowerCase();
 
                     switch (choice) {
                         case "skip" -> {
+                            count++;
                             continue;
                         }
                         case "previous" -> {
@@ -85,12 +98,12 @@ public class Utility {
                             }
                         }
                         case "restart" -> {
-                            this.sequenceManually(fileNames);
-                            break;
+                            count = 0;
+                            return sequenceManually(fileNames);
                         }
-                        // case "merge" -> {
-
-                        // }
+                        case "merge" -> {
+                            
+                        }
                         default -> System.out.println("Error: Invalid Input!");
                     }
                 }
@@ -185,6 +198,7 @@ public class Utility {
                 }
             }
 
+            remainingFileNames = null;
             sequencedFileNames = this.sequenceManually(allFileNames);
 
         } else {

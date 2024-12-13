@@ -233,7 +233,10 @@ public class InputHandler {
         int choice = 0;
         String input = "";
 
-        System.out.printf("\n%s\n", prompt1);
+        
+        if (prompt1 != null) {
+            System.out.printf("\n%s\n", prompt1);
+        }
 
         if (prompt2 != null) {
             System.out.printf("%s\n", prompt2);
