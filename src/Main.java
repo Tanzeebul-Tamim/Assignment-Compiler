@@ -15,11 +15,14 @@ public class Main {
             utils.printTitle();
             input.collectInputs();
 
-        } catch (NoSuchElementException err) {
-            utils.terminate(input.sc, true);
-
         } catch (Exception err) {
-            utils.terminate(input.sc, false);
+            if (err instanceof NoSuchElementException) {
+                // Intentional Termination by pressing Ctrl+C
+                utils.terminate(input.sc, true);
+            } else {
+                // Unintentional Errors
+                utils.terminate(input.sc, false);
+            }
 
         } finally {
             fileUtil = new FileUtility(

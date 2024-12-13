@@ -38,8 +38,12 @@ public class FileUtility {
         this.content = new StringBuilder();
     }
 
-    private FileUtility(File[] fileList, String filePath, String fileExtension) {
-        this(null, null, fileList, filePath, null, fileExtension, null);
+    private FileUtility(File[] fileList) {
+        this(null, null, fileList, null, null, null, null);
+    }
+
+    private FileUtility(File[] fileList, String fileExtension) {
+        this(null, null, fileList, null, null, fileExtension, null);
     }
 
     public List<String> getFileNames() {
@@ -50,10 +54,7 @@ public class FileUtility {
                 if (file != null) {
                     if (file.isDirectory()) {
                         // Recursively add files from subdirectories
-                        FileUtility subDirectory = new FileUtility(
-                                file.listFiles(),
-                                file.getAbsolutePath(),
-                                fileExtension);
+                        FileUtility subDirectory = new FileUtility(file.listFiles());
 
                         // Add the file names found in the subdirectory
                         fileNames.addAll(subDirectory.getFileNames());
@@ -69,13 +70,25 @@ public class FileUtility {
     }
 
     public void setFileList(String[][] categorizedFileNames) {
-        File[] sequencedFiles = new File[categorizedFileNames[0].length];
-        File[] nonSequencedFiles = new File[categorizedFileNames[1].length];
+        if (categorizedFileNames == null || categorizedFileNames.length < 2) {
+            throw new IllegalArgumentException("categorizedFileNames must have at least two non-null arrays.");
+        }
 
-        traverseAndMatchFiles(this.fileList, categorizedFileNames[0], sequencedFiles);
-        traverseAndMatchFiles(this.fileList, categorizedFileNames[1], nonSequencedFiles);
+        File[] sequencedFiles = new File[0];
+        File[] nonSequencedFiles = new File[0];
+
+        if (categorizedFileNames[0] != null) {
+            sequencedFiles = new File[categorizedFileNames[0].length];
+            traverseAndMatchFiles(this.fileList, categorizedFileNames[0], sequencedFiles);
+        }
+
+        if (categorizedFileNames[1] != null) {
+            nonSequencedFiles = new File[categorizedFileNames[1].length];
+            traverseAndMatchFiles(this.fileList, categorizedFileNames[1], nonSequencedFiles);
+        }
 
         File[] combinedFiles = new File[sequencedFiles.length + nonSequencedFiles.length];
+
         System.arraycopy(sequencedFiles, 0, combinedFiles, 0, sequencedFiles.length);
         System.arraycopy(nonSequencedFiles, 0, combinedFiles, sequencedFiles.length, nonSequencedFiles.length);
 
@@ -116,10 +129,7 @@ public class FileUtility {
         for (File file : this.fileList) {
             if (file != null) {
                 if (file.isDirectory()) {
-                    FileUtility subDirectory = new FileUtility(
-                            file.listFiles(),
-                            file.getAbsolutePath(),
-                            fileExtension);
+                    FileUtility subDirectory = new FileUtility(file.listFiles(), this.fileExtension);
 
                     List<File>[] subDirectoryFiles = subDirectory.filterFileExt();
                     fileList.addAll(subDirectoryFiles[0]);
@@ -166,11 +176,7 @@ public class FileUtility {
                 if (file.isDirectory()) {
                     System.out.println("\nEntering directory: " + file.getName());
 
-                    FileUtility subDirectoryUtility = new FileUtility(
-                            file.listFiles(),
-                            file.getAbsolutePath(),
-                            fileExtension);
-
+                    FileUtility subDirectoryUtility = new FileUtility(file.listFiles());
                     subDirectoryUtility.readFiles();
                     content.append(subDirectoryUtility.content);
 
@@ -196,6 +202,7 @@ public class FileUtility {
 
                         fileContent.append("\n\n");
                         content.append(fileContent);
+                        fileScanner.close();
 
                     } catch (FileNotFoundException err) {
                         System.out.println("Error: The file '" + file.getName()
@@ -208,11 +215,14 @@ public class FileUtility {
     }
 
     public void writeFiles() {
-        String outputPath = filePath + File.separator + fileName + ".txt";
+        String outputPath = filePath + File.separator + this.fileName + ".txt";
         File outputFile = new File(outputPath);
 
         if (outputFile.exists()) {
-            int choice = input.handleFileOverwriting(fileName);
+            String prompt1 = "Error: A file with the name '" + this.fileName + ".txt' already exists in the directory.";
+            String prompt2 = "Choose and Option:";
+
+            int choice = input.getUserChoice(prompt1, prompt2, 3, "Overwrite", "Create New Version", "Skip");
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");
@@ -237,8 +247,8 @@ public class FileUtility {
         try {
             if (outputFile.createNewFile()) {
                 System.out.println("\n\nCreated new output file in input directory.");
-
             }
+
         } catch (IOException err) {
             System.out.println(
                     "\nError: Failed to create file in the input directory. Writing to the current directory...");

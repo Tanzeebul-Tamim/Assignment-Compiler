@@ -34,6 +34,10 @@ public class Utility {
         System.exit(0);
     }
 
+    public void manualSequencing() {
+        
+    }
+
     public String[][] detectSequence(List<String> fileNames) {
         String[] sequencedFileNames = new String[fileNames.size()];
         String[] remainingFileNames = new String[fileNames.size()];

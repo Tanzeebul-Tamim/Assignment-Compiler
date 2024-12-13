@@ -43,20 +43,15 @@ public class InputHandler {
 
     private void name() {
         while (name == null) {
-            try {
-                System.out.println("Please enter your full name:");
-                String input = utils.formatName(sc.nextLine());
+            System.out.println("Please enter your full name:");
+            String input = utils.formatName(sc.nextLine());
 
-                if (input.isEmpty()) {
-                    System.out.println("Error: Name cannot be left empty.\n");
-                    continue;
-                }
-
-                name = input;
-
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
+            if (input.isEmpty()) {
+                System.out.println("Error: Name cannot be left empty.\n");
+                continue;
             }
+
+            name = input;
         }
     }
 
@@ -72,22 +67,20 @@ public class InputHandler {
                 }
 
                 if (!input.matches("\\d+")) {
-                    System.out.println("\nError: Invalid input. ID must contain only numeric characters.");
+                    System.out.println("\nError: Invalid Input! ID must contain only numeric characters.");
                     continue;
                 }
 
                 if (input.length() != 8) {
-                    System.out.println("\nError: Invalid input. ID must be exactly 8 digits.");
+                    System.out.println("\nError: Invalid Input! ID must be exactly 8 digits.");
                     continue;
                 }
 
                 id = Integer.parseInt(input);
 
             } catch (NumberFormatException err) {
-                System.out.println("\nError: Invalid input. ID must be a numeric value.");
+                System.out.println("\nError: Invalid Input! ID must be a numeric value.");
 
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
             }
         }
     }
@@ -105,22 +98,20 @@ public class InputHandler {
 
                 if (!input.matches("\\d+")) {
                     System.out
-                            .println("\nError: Invalid input. Assignment-No must contain only numeric characters.");
+                            .println("\nError: Invalid Input! Assignment-No must contain only numeric characters.");
                     continue;
                 }
 
                 assignmentNo = Integer.parseInt(input);
 
                 if (assignmentNo < 1 || assignmentNo > 15) {
-                    System.out.println("\nError: Invalid input. Assignment-No must be between 1 and 15.");
+                    System.out.println("\nError: Invalid Input! Assignment-No must be between 1 and 15.");
                     assignmentNo = 0;
                 }
 
             } catch (NumberFormatException err) {
-                System.out.println("\nError: Invalid input. Assignment-No must be a numeric value.");
+                System.out.println("\nError: Invalid Input! Assignment-No must be a numeric value.");
 
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
             }
         }
     }
@@ -149,15 +140,13 @@ public class InputHandler {
                     fileExtension = "." + input;
 
                 } else {
-                    System.out.println("\nError: Invalid input. Allowed extensions are:");
+                    System.out.println("\nError: Invalid Input! Allowed extensions are:");
                     System.out.println("       " + String.join(", ", validExtensions));
                 }
 
             } catch (NumberFormatException err) {
-                System.out.println("\nError: Invalid input. Enter a valid extension.");
+                System.out.println("\nError: Invalid Input! Enter a valid extension.");
 
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
             }
         }
 
@@ -213,38 +202,91 @@ public class InputHandler {
                 }
             } catch (NumberFormatException err) {
                 System.out
-                        .println("\nError: Invalid input. Please double-check and enter a valid path.");
+                        .println("\nError: Invalid Input! Please double-check and enter a valid path.");
 
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
             }
         }
     }
 
-    public int handleFileOverwriting(String fileName) throws InputMismatchException {
-        System.out.println("\nA file with the name '" + fileName + ".txt' already exists in the directory.\n");
-        System.out.println("Choose an Option:");
-        System.out.println("(1) Overwrite\n(2) Create New Version\n(3) Skip");
+    private void choiceCountLoop(int choiceCount) {
+        for (int i = 1; i <= choiceCount; i++) {
+            if (i == 1) {
+                System.out.print("(");
+            }
 
-        int choice = -1;
+            if (i == choiceCount) {
+                System.out.printf("or %d):\n", i);
+            } else {
+                System.out.printf("%d, ", i);
+            }
+        }
+    }
 
-        while (choice < 1 || choice > 3) {
-            System.out.print("\nEnter your choice: ");
+    public int getUserChoice(
+            String prompt1,
+            String prompt2,
+            int choiceCount,
+            String... choices)
+            throws InputMismatchException,
+            NoSuchElementException {
 
+        int choice = 0;
+
+        if (choices.length != choiceCount) {
+            throw new IllegalArgumentException(
+                    "The number of provided choices does not match the expected choice count.");
+        }
+
+        System.out.printf("\n%s\n\n", prompt1);
+
+        if (prompt2 != null) {
+            System.out.printf("%s\n", prompt2);
+        }
+
+        for (int i = 0; i < choiceCount; i++) {
+            System.out.printf("(%d) %s", i + 1, choices[i]);
+
+            if (i != choiceCount - 1) {
+                System.out.println();
+            }
+        }
+
+        while (choice == 0) {
             try {
-                if (this.sc.hasNextInt()) {
-                    choice = this.sc.nextInt();
-                    System.out.println();
-                } else {
-                    System.out.println();
-                    System.out.println("Please enter a valid option (1, 2, or 3).");
-                    this.sc.nextLine(); // Clear invalid input
+                System.out.print("\n\nPlease enter your choice ");
+                this.choiceCountLoop(choiceCount);
+
+                String input = sc.nextLine().trim();
+
+                if (input.isEmpty()) {
+                    System.out.println("Error: You must pick one of the options.");
+                    continue;
                 }
-            } catch (NoSuchElementException err) {
-                utils.terminate(sc, true);
+
+                if (!input.matches("\\d+")) {
+                    System.out
+                            .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
+                    this.choiceCountLoop(choiceCount);
+                    continue;
+                }
+
+                choice = Integer.parseInt(input);
+
+                if (choice < 1 || choice > choiceCount) {
+                    System.out
+                            .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
+                    this.choiceCountLoop(choiceCount);
+                    choice = 0;
+                }
+
+                System.out.println();
+
+            } catch (NumberFormatException err) {
+                System.out.printf("\nError: Invalid Input! Enter a number between 1 to %d\n", choiceCount);
             }
         }
 
         return choice;
     }
+
 }
