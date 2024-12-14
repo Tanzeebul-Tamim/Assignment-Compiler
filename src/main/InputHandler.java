@@ -35,11 +35,12 @@ public class InputHandler {
         this.id();
         this.assignmentNo();
         this.fileExtension();
+        Utility.clearConsole();
         this.directoryPath();
     }
 
     // Method to display a user prompt for selecting multiple input options
-    private static void choiceCountLoop(int choiceCount) {
+    public static void choiceCountLoop(int choiceCount) {
         if (choiceCount > 5) {
             System.out.printf("(1-%d).\n", choiceCount);
 
@@ -112,6 +113,7 @@ public class InputHandler {
                         String keyword = keywords[i];
 
                         if (input.equalsIgnoreCase(keyword)) {
+                            System.out.println();
                             return keyword;
                         }
                     }
@@ -132,6 +134,7 @@ public class InputHandler {
                                 .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
                         choiceCountLoop(choices.length);
                         choice = 0;
+                        continue;
                     }
                 } else {
                     if (choice < 1 || choice > fileCount) {
@@ -139,6 +142,7 @@ public class InputHandler {
                                 .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
                         choiceCountLoop(fileCount);
                         choice = 0;
+                        continue;
                     }
                 }
 
@@ -259,61 +263,57 @@ public class InputHandler {
                 System.out.println("       " + String.join(", ", validExtensions));
             }
         }
-
-        System.out.println();
     }
 
     // Collects the directory path where the assignment files are located
     private void directoryPath() {
         System.out.println(
-                "Important Note:\nPlease ensure that the selected directory contains only the assignment files. Including unrelated files (e.g., images, documents, or executables) or question-provided tester class files in the directory will result in an invalid assignment text file. Submitting such an incorrect file might cause issues with your university assignment submission.\n\nFor best results:\n"
+                "Important Note:\nPlease ensure that the selected directory contains only the assignment files.\n\nFor best results:\n"
                         +
                         " - Organize your assignment files in a dedicated folder.\n" +
                         " - Verify that all files are relevant before proceeding.\n" +
                         " - If possible, name the files using a sequence (e.g., `Task-01`, `Task-02`, or `Task1`, `Task2`, etc.).\n"
                         +
-                        "   (If the files are not named sequentially, or if you are unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
+                        "   (If you're unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
+
+        Utility.pressEnter();
+        Utility.clearPreviousLines(3);
 
         while (true) {
-            try {
-                System.out.println("\nPlease copy the path to your assignment folder and paste here:");
-                String input = sc.nextLine().trim();
+            System.out.println("\nPlease copy the path to your assignment folder and paste here:");
+            String input = sc.nextLine().trim();
+            Utility.clearConsole();
 
-                if (input.isEmpty()) {
-                    System.out.println("Error: Directory path cannot be left empty.");
-                    continue;
-                }
+            if (input.isEmpty()) {
+                System.out.println("Error: Directory path cannot be left empty.");
+                continue;
+            }
 
-                if (input.startsWith("\"") && input.endsWith("\"")) {
-                    input = input.substring(1, input.length() - 1);
-                }
+            if (input.startsWith("\"") && input.endsWith("\"")) {
+                input = input.substring(1, input.length() - 1);
+            }
 
-                directory = new File(input);
+            directory = new File(input);
 
-                if (directory.exists() && directory.isDirectory()) {
-                    File[] fileList = directory.listFiles();
+            if (directory.exists() && directory.isDirectory()) {
+                File[] fileList = directory.listFiles();
 
-                    if (fileList == null || fileList.length == 0) {
-                        System.out.println(
-                                "\nError: No files found in the directory. Ensure the directory contains valid assignment files and try again.");
-
-                    } else {
-                        folderPath = directory.getAbsolutePath();
-                        this.fileList = fileList;
-                        return;
-                    }
+                if (fileList == null || fileList.length == 0) {
+                    System.out.println(
+                            "\nError: No files found in the directory. Ensure the directory contains valid assignment files and try again.");
 
                 } else {
-                    if (!directory.exists()) {
-                        System.out.println("\nError: The provided path does not exist.");
-                    } else {
-                        System.out.println("\nError: The provided path is not a valid directory.");
-                    }
-
+                    folderPath = directory.getAbsolutePath();
+                    this.fileList = fileList;
+                    return;
                 }
-            } catch (IllegalArgumentException err) {
-                System.out
-                        .println("\nError: Invalid Input! Please double-check and enter a valid path.");
+
+            } else {
+                if (!directory.exists()) {
+                    System.out.println("Error: The provided path does not exist.");
+                } else {
+                    System.out.println("Error: The provided path is not a valid directory.");
+                }
 
             }
         }

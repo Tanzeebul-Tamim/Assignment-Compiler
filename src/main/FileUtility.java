@@ -70,7 +70,7 @@ public class FileUtility {
 
         // Checks for invalid arguments
         if (categorizedFileNames == null || categorizedFileNames.length < 2) {
-            throw new IllegalArgumentException("categorizedFileNames must have at least two non-null arrays.");
+            throw new IllegalArgumentException("Must pass an array of strings containing at least two non-null arrays of strings.");
         }
 
         // Stores the files separately in 2 new arrays
@@ -164,8 +164,9 @@ public class FileUtility {
         return separatedFiles;
     }
 
+    // Todo: Remove error messages using the clear previous line method
     // Validates file extensions, retains supported files, and logs unsupported ones
-    public void filterFiles() {
+    public void filterFiles() throws InterruptedException {
         List<File>[] validFiles = validateFileExtension();
 
         this.fileList = validFiles[0].toArray(new File[0]);
@@ -173,7 +174,7 @@ public class FileUtility {
         int fileCount = 0;
 
         // Prints the name of files that have unsupported extensions
-        System.out.println("\nFiles with Unsupported extensions:");
+        System.out.println("Files with Unsupported extensions:");
 
         for (File file : unsupportedFiles) {
             System.out.printf("   %s. %s\n",
@@ -181,6 +182,8 @@ public class FileUtility {
                     file.getName(),
                     file.getName());
         }
+
+        Thread.sleep(1000);
     }
 
     /*
