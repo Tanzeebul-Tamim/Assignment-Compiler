@@ -5,16 +5,13 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Utility {
-    private InputHandler input; // InputHandler class reference
-
-    // Method to set InputHandler class reference
-    public void setInputHandler(InputHandler input) {
-        this.input = input;
+public final class Utility {
+    private Utility() {
+        throw new UnsupportedOperationException("Utility class cannot be instantiated");
     }
 
     // Method to print title
-    public void printTitle() {
+    public static void printTitle() {
         System.out.println("Welcome to the Assignment File Generator Tool!");
         System.out.println("You can press Ctrl + C anytime to terminate the program.\n");
         System.out.println(
@@ -23,7 +20,7 @@ public class Utility {
     }
 
     // Method to print error
-    public void printError() {
+    public static void printError() {
         System.out.println("An error occurred while trying to write the output file.");
         System.out.println("Possible reasons:");
         System.out.println("- The program does not have permission to write in the specified directory.");
@@ -31,9 +28,8 @@ public class Utility {
         System.out.println("- The file path might be invalid or corrupted.");
     }
 
-    // Method to gracefully handle errors in case of any unexpected errors or sudden
-    // termination of the program
-    public void terminate(Scanner sc, boolean intentional) {
+    // Method to gracefully handle unexpected errors & termination of the program
+    public static void terminate(Scanner sc, boolean intentional) {
         if (intentional) {
             // For Intentional termination of the program
             System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");
@@ -42,12 +38,27 @@ public class Utility {
             System.out.println("\n\nProgram terminated due to an unexpected error!");
         }
 
-        sc.close();
-        System.exit(0);
+        // Closer scanner if it's still open
+        if (sc != null)
+            sc.close();
+
+        System.exit(0); // Exit program
+    }
+
+    // Method to simulate clearing out the console
+    public static void clearConsole() {
+        for (int i = 0; i < 100; i++)
+            System.out.println();
+    }
+
+    // Method to stop the game until user enters something
+    public static void pressEnter() {
+        System.out.println("\nPress Enter to continue....");
+        InputHandler.sc.nextLine();
     }
 
     // Prints user prompts to guide the user
-    private void printUserPrompt() {
+    private static void printUserPrompt() {
         System.out.println("\nNote:");
         System.out.println(" - Type 'Skip' to exclude this file.");
         System.out.println(" - Type 'Previous' to go back to the previous file.");
@@ -57,11 +68,11 @@ public class Utility {
     }
 
     // Handles the manual reordering of the unordered file names
-    public String[] sequenceManually(String[] fileNames) {
+    public static String[] sequenceManually(String[] fileNames) {
         System.out.println("\nPlease review the files manually:");
-        this.printUserPrompt();
+        printUserPrompt();
 
-        String[] sequencedFileNames = new String[fileNames.length];
+        String[] sequencedFileNames = new String[fileNames.length]; // Stores the final sequenced array of filenames
         String[] keywords = { "Skip", "Previous", "Restart", "Merge" }; // Specified keywords for specified actions
 
         int count = 0;
@@ -71,7 +82,7 @@ public class Utility {
 
             if (fileName != null) {
                 if (count == fileNames.length - 1) {
-                    // Automatically place the last file in the last remaining slot
+                    // Automatically places the last file in the last remaining slot
                     for (int j = 0; j < sequencedFileNames.length; j++) {
                         if (sequencedFileNames[j] == null) {
                             sequencedFileNames[j] = fileName; // Assign the last file to the empty slot
@@ -82,18 +93,19 @@ public class Utility {
 
                 String prompt = "Please assign a sequence number to the file '" + fileName + "':";
 
-                // Get user input
-                String choice = input.getUserChoice(prompt, null, fileNames.length, keywords);
+                // Gets user input
+                String choice = InputHandler.getUserChoice(prompt, null, fileNames.length, keywords);
                 int choiceInt = 0;
 
-                try {
-                    // Tries to convert the input into an integer, then using that integer, sets the
-                    // file in the specified index to maintain a sequence
+                try { // Tries to convert the user input into an integer
                     choiceInt = Integer.parseInt(choice);
+
+                    // Then sets the file in the specified index to maintain a sequence
                     sequencedFileNames[choiceInt - 1] = fileName;
                     count++;
 
-                } catch (NumberFormatException err) {
+                } catch (NumberFormatException err) { // Executes, if fails to convert input into an integer
+                    // Looks for specific keywords to perform specific actions
                     choice = choice.toLowerCase();
 
                     // Logics for different specified actions
@@ -105,7 +117,7 @@ public class Utility {
                         case "previous" -> { // Goes back to the previous file
                             if (i > 0) {
                                 i -= 2;
-                            } else { // Prevents the attempt to going back to the previous file when user's already on the first file
+                            } else { // Prevents going back to the previous file when already on the first file
                                 System.out.println("\nAlready at the first file.");
                                 i -= 1;
                             }
@@ -127,7 +139,7 @@ public class Utility {
     }
 
     // Method to detect sequence among file names
-    public String[][] sequenceFiles(List<String> fileNames) {
+    public static String[][] sequenceFiles(List<String> fileNames) {
         // Storing ordered and unordered files in separate arrays
         String[] sequencedFileNames = new String[fileNames.size()];
         String[] remainingFileNames = new String[fileNames.size()];
@@ -172,6 +184,7 @@ public class Utility {
 
             System.out.println("\nNo sequence detected!");
 
+            // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
                 System.out.println("\nFiles found:");
 
@@ -184,11 +197,12 @@ public class Utility {
                 }
             }
 
-            remainingFileNames = this.sequenceManually(remainingFileNames);
+            remainingFileNames = sequenceManually(remainingFileNames);
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some doesn't
             System.out.println("\nNot all files follow the sequence.");
 
+            // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nSequenced files detected:");
 
@@ -203,8 +217,9 @@ public class Utility {
 
             fileCount = 0;
 
+            // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
-                System.out.println("\nRemaining jumbled files:");
+                System.out.println("\nRemaining non-sequenced files:");
 
                 for (String fileName : remainingFileNames) {
                     if (fileName != null) {
@@ -216,9 +231,10 @@ public class Utility {
             }
 
             remainingFileNames = null;
-            sequencedFileNames = this.sequenceManually(allFileNames);
+            sequencedFileNames = sequenceManually(allFileNames);
 
         } else { // Case 3: All files maintain sequence
+            // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nThe following sequence has been detected:");
 
@@ -232,15 +248,18 @@ public class Utility {
             }
         }
 
-        // Building the final array containing both arrays of sequenced and non sequenced file names
+        /*
+         * Builds the final array containing both arrays of sequenced and non
+         * sequenced file names
+         */
         filteredFileName[0] = sequencedFileNames;
         filteredFileName[1] = remainingFileNames;
 
         return filteredFileName;
     }
 
-    // Formats the user name by trimming unnecessary white spaces and applying proper capitalization
-    public String formatName(String name) {
+    // Trims unnecessary white spaces and applies proper capitalization to username
+    public static String formatName(String name) {
         name = name.trim();
         String[] words = name.split("\\s+");
         StringBuilder formattedName = new StringBuilder();

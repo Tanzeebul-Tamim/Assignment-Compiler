@@ -2,46 +2,52 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicInteger;
 import main.*;
 
+// Todo: press enter, clear console, merge files
 public class Main {
     public static void main(String[] args) {
         FileUtility fileUtil;
-        Utility utils = new Utility();
-        InputHandler input = new InputHandler(utils);
-        
-        // Tracks the task sequence numbers to ensure unique and consistent numbering in the output file.
+        InputHandler input = new InputHandler();
+
+        /*
+         * Tracks the task sequence-numbers to ensure unique and consistent numbering in
+         * the output file.
+         * e.g. // TASK 1, // TASK 2
+         */
         AtomicInteger taskSequenceTracker = new AtomicInteger(0);
-        utils.setInputHandler(input); // Sets InputHandler object reference in Utility class
 
         try {
-            utils.printTitle(); // Prints title
-            input.collectInputs(); // Collects all user information
+            Utility.printTitle();
+            input.collectInputs();
 
             fileUtil = new FileUtility(
-                    input,
-                    utils,
                     input.fileList,
                     input.folderPath,
                     input.getFileName(),
                     input.fileExtension,
                     taskSequenceTracker);
 
-            fileUtil.validateFileExt(); // Validates extension
-            fileUtil.setFileList(utils.sequenceFiles(fileUtil.getFileNames())); // Sets file list sequentially
+            fileUtil.filterFiles(); // Ensures that the file extensions are valid before processing
+            fileUtil.setFileList(Utility.sequenceFiles(fileUtil.getFileNames())); // Sets file list sequentially
 
             fileUtil.readFiles(); // Reads file contents from the files located in the provided path
             fileUtil.writeFiles(); // Generates the output file and writes the content in it
 
+        } catch (NoSuchElementException err) {
+            // Catching NoSuchElementException when user presses Ctrl+C to intentionally
+            // terminate the program
+            Utility.terminate(InputHandler.sc, true);
+
         } catch (Exception err) {
-            if (err instanceof NoSuchElementException) {
-                // Intentional Termination by pressing Ctrl+C
-                utils.terminate(input.sc, true);
-            } else {
-                // Unintentional Errors
-                utils.terminate(input.sc, false);
-            }
+            // Catching other unintentional & unexpected exceptions and terminating the
+            // program
+            Utility.terminate(InputHandler.sc, false);
 
         } finally {
-            input.sc.close(); // Closes the scanner object
+            // Ensure scanner is closed regardless of termination
+            if (InputHandler.sc != null) {
+                InputHandler.sc.close();
+            }
+
         }
     }
 }

@@ -11,8 +11,6 @@ import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class FileUtility {
-    private InputHandler input; // Input Class Reference
-    private Utility utils; // Utils Class Reference
     private File[] fileList;
     private String filePath;
     private String fileName;
@@ -21,15 +19,11 @@ public class FileUtility {
     private StringBuilder content;
 
     public FileUtility(
-            InputHandler input,
-            Utility utils,
             File[] fileList,
             String filePath,
             String fileName,
             String fileExtension,
             AtomicInteger fileCount) {
-        this.input = input;
-        this.utils = utils;
         this.fileList = fileList;
         this.filePath = filePath;
         this.fileName = fileName;
@@ -38,18 +32,16 @@ public class FileUtility {
         this.content = new StringBuilder();
     }
 
-    // Mainly used for recursive traversing
+    // Overloaded constructors, used for recursive traversing
     private FileUtility(File[] fileList) {
-        this(null, null, fileList, null, null, null, null);
+        this(fileList, null, null, null, null);
     }
 
-    // Mainly used for recursive traversing
     private FileUtility(File[] fileList, String fileExtension) {
-        this(null, null, fileList, null, null, fileExtension, null);
+        this(fileList, null, null, fileExtension, null);
     }
 
-    // Method to get all file name under from a specific path including nested
-    // directories
+    // Gets all file names from a specific path including nested directories
     public List<String> getFileNames() {
         List<String> fileNames = new ArrayList<>();
 
@@ -60,10 +52,10 @@ public class FileUtility {
                         // Recursively add files from subdirectories
                         FileUtility subDirectory = new FileUtility(file.listFiles());
 
-                        // Add the file names found in the subdirectory
+                        // Add the file names in the main arraylist, found in the subdirectory
                         fileNames.addAll(subDirectory.getFileNames());
                     } else {
-                        // Add file name if it's a file
+                        // Add file name to the arraylist if it's a file
                         fileNames.add(file.getName());
                     }
                 }
@@ -73,10 +65,9 @@ public class FileUtility {
         return fileNames;
     }
 
-    // Receives file list in a array of 2 arrays, containing sequenced and non
-    // sequenced files and then set them sequentially
+    // Combines the received sequenced & non-sequenced file-lists sequentially
     public void setFileList(String[][] categorizedFileNames) {
-        
+
         // Checks for invalid arguments
         if (categorizedFileNames == null || categorizedFileNames.length < 2) {
             throw new IllegalArgumentException("categorizedFileNames must have at least two non-null arrays.");
@@ -86,27 +77,33 @@ public class FileUtility {
         File[] sequencedFiles = new File[0];
         File[] nonSequencedFiles = new File[0];
 
+        // Matches the filenames and creates a sequential array of files
         if (categorizedFileNames[0] != null) {
             sequencedFiles = new File[categorizedFileNames[0].length];
             traverseAndMatchFiles(this.fileList, categorizedFileNames[0], sequencedFiles);
         }
 
+        // Matches the filenames and combines the non-sequential files in the same array
         if (categorizedFileNames[1] != null) {
             nonSequencedFiles = new File[categorizedFileNames[1].length];
             traverseAndMatchFiles(this.fileList, categorizedFileNames[1], nonSequencedFiles);
         }
 
-        // Making a new array combining both sequenced and non sequenced arrays sequentially
+        // Stores the final combined file list
         File[] combinedFiles = new File[sequencedFiles.length + nonSequencedFiles.length];
 
+        // Combines both sequenced and non-sequenced arrays sequentially
         System.arraycopy(sequencedFiles, 0, combinedFiles, 0, sequencedFiles.length);
         System.arraycopy(nonSequencedFiles, 0, combinedFiles, sequencedFiles.length, nonSequencedFiles.length);
 
         this.fileList = combinedFiles;
     }
 
-    // Iterates through all the file names, matches the name with the existing file
-    // names using file.getName() method, and sequentially sets the file names
+    /*
+     * Iterates through all the file names
+     * Matches the names with all the existing filenames
+     * Sequentially sets the file names
+     */
     private void traverseAndMatchFiles(File[] fileList, String[] fileNames, File[] container) {
         if (fileList == null) {
             return;
@@ -123,6 +120,7 @@ public class FileUtility {
                         // Recursive traversing for sub directories
                         traverseAndMatchFiles(file.listFiles(), fileNames, container);
                     } else {
+                        // Adds the file sequentially to the final (container) array if name matches
                         if (file.getName().equals(fileName)) {
                             container[index++] = file;
                             break;
@@ -133,9 +131,9 @@ public class FileUtility {
         }
     }
 
-    // Method to validate and filter files with the valid extension 
+    // Method to validate files with the valid extension
     @SuppressWarnings("unchecked")
-    private List<File>[] filterFileExt() {
+    private List<File>[] validateFileExtension() {
         List<File> fileList = new ArrayList<>();
         List<File> unsupportedFileList = new ArrayList<>();
         List<File>[] separatedFiles = new List[2];
@@ -143,13 +141,14 @@ public class FileUtility {
         for (File file : this.fileList) {
             if (file != null) {
                 if (file.isDirectory()) {
-                    // Recursive traversing for sub directories
+                    // Recursively process subdirectories
                     FileUtility subDirectory = new FileUtility(file.listFiles(), this.fileExtension);
-                    List<File>[] subDirectoryFiles = subDirectory.filterFileExt();
+                    List<File>[] subDirectoryFiles = subDirectory.validateFileExtension();
 
                     fileList.addAll(subDirectoryFiles[0]);
                     unsupportedFileList.addAll(subDirectoryFiles[1]);
                 } else {
+                    // Files with only the valid extension gets selected
                     if (file.getName().endsWith(fileExtension)) {
                         fileList.add(file);
                     } else {
@@ -165,14 +164,15 @@ public class FileUtility {
         return separatedFiles;
     }
 
-    // Prints the name of files that have unsupported extensions
-    public void validateFileExt() {
-        List<File>[] validFiles = filterFileExt();
+    // Validates file extensions, retains supported files, and logs unsupported ones
+    public void filterFiles() {
+        List<File>[] validFiles = validateFileExtension();
 
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
 
+        // Prints the name of files that have unsupported extensions
         System.out.println("\nFiles with Unsupported extensions:");
 
         for (File file : unsupportedFiles) {
@@ -183,7 +183,10 @@ public class FileUtility {
         }
     }
 
-    // Reads all the files (files with valid extension) and builds a string containing the content
+    /*
+     * Reads all the files (files with valid extension) and builds a string
+     * containing the content and stores them for further processing.
+     */
     public void readFiles() {
         System.out.println("\nReading files: ");
         int fileCount = 0;
@@ -240,7 +243,7 @@ public class FileUtility {
         String outputPath = filePath + File.separator + this.fileName + ".txt";
         File outputFile = new File(outputPath);
 
-        // Checking for already existing files with same name, to avoid unwanted file overwriting
+        // Checks for existing file with same name to avoid unwanted file overwriting
         if (outputFile.exists()) {
             String prompt1 = "Error: A file with the name '" + this.fileName
                     + ".txt' already exists in the directory.\n";
@@ -248,7 +251,8 @@ public class FileUtility {
 
             int choice = Integer
                     .parseInt(
-                            input.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version", "Skip"));
+                            InputHandler.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version",
+                                    "Skip"));
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");
@@ -270,14 +274,17 @@ public class FileUtility {
             }
         }
 
-        // Creating a new .txt file
+        // Creates a new .txt file
         try {
             if (outputFile.createNewFile()) {
                 System.out.println("\n\nCreated new output file in input directory.");
             }
 
         } catch (IOException err) {
-            // In case of any interrupted operations, the file is written in the directory from where the program is executed
+            /*
+             * In case of any interrupted operations, the file is written in the directory
+             * from where the program is executed
+             */
             System.out.println(
                     "\nError: Failed to create file in the input directory. Writing to the current directory...");
 
@@ -292,7 +299,7 @@ public class FileUtility {
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
         } catch (IOException err) {
-            utils.printError();
+            Utility.printError();
         }
     }
 }
