@@ -1,28 +1,28 @@
-package main;
+package utilities;
 
 import java.io.File;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class InputHandler {
-    public String name;
-    public int id;
-    public int assignmentNo;
-    public String fileExtension;
-    public String folderPath;
+public class InputUtils extends BaseUtils {
+    public static String name;
+    public static int id;
+    public static int assignmentNo;
+    public static String fileExtension;
+    public static String folderPath;
 
-    public File directory;
-    public File[] fileList; // Stores all the files found in the provided directory
+    public static File directory;
+    public static File[] fileList; // Stores all the files found in the provided directory
     public static Scanner sc = new Scanner(System.in);
 
     // Valid file extensions
-    private String[] validExtensions = {
+    private static String[] validExtensions = {
             "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
     };
 
     // Method to generate output file name
-    public String getFileName() {
+    public static String getFileName() {
         String studentIdentity = String.format("%02d", assignmentNo) + "_" + id + "_" + name;
         String fileName = "Assignment " + studentIdentity;
 
@@ -30,13 +30,13 @@ public class InputHandler {
     }
 
     // Method to collect all user information
-    public void collectInputs() throws NoSuchElementException, InputMismatchException {
-        this.name();
-        this.id();
-        this.assignmentNo();
-        this.fileExtension();
-        Utility.clearConsole();
-        this.directoryPath();
+    public static void collectInputs() throws NoSuchElementException, InputMismatchException {
+        name();
+        id();
+        assignmentNo();
+        fileExtension();
+        ConsoleUtils.clearConsole();
+        directoryPath();
     }
 
     // Method to display a user prompt for selecting multiple input options
@@ -127,23 +127,14 @@ public class InputHandler {
                 }
 
                 choice = Integer.parseInt(input);
+                int upperBound = (choices.length > 0) ? choices.length : fileCount;
 
-                if (choices.length > 0) {
-                    if (choice < 1 || choice > choices.length) {
-                        System.out
-                                .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
-                        choiceCountLoop(choices.length);
-                        choice = 0;
-                        continue;
-                    }
-                } else {
-                    if (choice < 1 || choice > fileCount) {
-                        System.out
-                                .print("\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
-                        choiceCountLoop(fileCount);
-                        choice = 0;
-                        continue;
-                    }
+                if (choice < 1 || choice > upperBound) {
+                    System.out.print(
+                            "\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
+                    choiceCountLoop(upperBound);
+                    choice = 0;
+                    continue;
                 }
 
                 System.out.println();
@@ -158,10 +149,10 @@ public class InputHandler {
     }
 
     // Collects user name
-    private void name() {
+    private static void name() {
         while (name == null) {
             System.out.println("Please enter your full name:"); // Formats name
-            String input = Utility.formatName(sc.nextLine());
+            String input = ConsoleUtils.formatName(sc.nextLine());
 
             if (input.isEmpty()) {
                 System.out.println("Error: Name cannot be left empty.\n");
@@ -173,7 +164,7 @@ public class InputHandler {
     }
 
     // Collects user id
-    private void id() {
+    private static void id() {
         while (id == 0) {
             try {
                 System.out.println("\nPlease enter your 8-digit ID (e.g., 24100000):");
@@ -204,7 +195,7 @@ public class InputHandler {
     }
 
     // Collects assignment no
-    private void assignmentNo() {
+    private static void assignmentNo() {
         while (assignmentNo == 0) {
             try {
                 System.out.println("\nPlease enter the assignment-no (1-15):");
@@ -236,7 +227,7 @@ public class InputHandler {
     }
 
     // Collects the required file extension
-    private void fileExtension() {
+    private static void fileExtension() {
         while (fileExtension == null) {
             System.out.println(
                     "\nPlease enter the required file extension for your assignment (e.g., java, py, cpp):");
@@ -266,7 +257,7 @@ public class InputHandler {
     }
 
     // Collects the directory path where the assignment files are located
-    private void directoryPath() {
+    private static void directoryPath() {
         System.out.println(
                 "Important Note:\nPlease ensure that the selected directory contains only the assignment files.\n\nFor best results:\n"
                         +
@@ -276,13 +267,13 @@ public class InputHandler {
                         +
                         "   (If you're unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
 
-        Utility.pressEnter();
-        Utility.clearPreviousLines(3);
+        ConsoleUtils.pressEnter();
+        ConsoleUtils.clearPreviousLines(3);
 
         while (true) {
             System.out.println("\nPlease copy the path to your assignment folder and paste here:");
             String input = sc.nextLine().trim();
-            Utility.clearConsole();
+            ConsoleUtils.clearConsole();
 
             if (input.isEmpty()) {
                 System.out.println("Error: Directory path cannot be left empty.");
@@ -304,7 +295,7 @@ public class InputHandler {
 
                 } else {
                     folderPath = directory.getAbsolutePath();
-                    this.fileList = fileList;
+                    InputUtils.fileList = fileList;
                     return;
                 }
 

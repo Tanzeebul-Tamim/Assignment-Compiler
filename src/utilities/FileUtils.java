@@ -1,4 +1,4 @@
-package main;
+package utilities;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class FileUtility {
+public class FileUtils {
     private File[] fileList;
     private String filePath;
     private String fileName;
@@ -18,7 +18,7 @@ public class FileUtility {
     private AtomicInteger fileCount;
     private StringBuilder content;
 
-    public FileUtility(
+    public FileUtils(
             File[] fileList,
             String filePath,
             String fileName,
@@ -33,11 +33,11 @@ public class FileUtility {
     }
 
     // Overloaded constructors, used for recursive traversing
-    private FileUtility(File[] fileList) {
+    private FileUtils(File[] fileList) {
         this(fileList, null, null, null, null);
     }
 
-    private FileUtility(File[] fileList, String fileExtension) {
+    private FileUtils(File[] fileList, String fileExtension) {
         this(fileList, null, null, fileExtension, null);
     }
 
@@ -50,7 +50,7 @@ public class FileUtility {
                 if (file != null) {
                     if (file.isDirectory()) {
                         // Recursively add files from subdirectories
-                        FileUtility subDirectory = new FileUtility(file.listFiles());
+                        FileUtils subDirectory = new FileUtils(file.listFiles());
 
                         // Add the file names in the main arraylist, found in the subdirectory
                         fileNames.addAll(subDirectory.getFileNames());
@@ -142,7 +142,7 @@ public class FileUtility {
             if (file != null) {
                 if (file.isDirectory()) {
                     // Recursively process subdirectories
-                    FileUtility subDirectory = new FileUtility(file.listFiles(), this.fileExtension);
+                    FileUtils subDirectory = new FileUtils(file.listFiles(), this.fileExtension);
                     List<File>[] subDirectoryFiles = subDirectory.validateFileExtension();
 
                     fileList.addAll(subDirectoryFiles[0]);
@@ -172,6 +172,7 @@ public class FileUtility {
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
+        Thread.sleep(1000);
 
         // Prints the name of files that have unsupported extensions
         System.out.println("Files with Unsupported extensions:");
@@ -200,7 +201,7 @@ public class FileUtility {
                     // Recursive traversing for sub directories
                     System.out.println("\nEntering directory: " + file.getName());
 
-                    FileUtility subDirectoryUtility = new FileUtility(file.listFiles());
+                    FileUtils subDirectoryUtility = new FileUtils(file.listFiles());
                     subDirectoryUtility.readFiles();
                     content.append(subDirectoryUtility.content);
 
@@ -254,7 +255,7 @@ public class FileUtility {
 
             int choice = Integer
                     .parseInt(
-                            InputHandler.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version",
+                            InputUtils.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version",
                                     "Skip"));
 
             if (choice == 1) {
@@ -302,7 +303,7 @@ public class FileUtility {
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
         } catch (IOException err) {
-            Utility.printError();
+            ConsoleUtils.printError();
         }
     }
 }
