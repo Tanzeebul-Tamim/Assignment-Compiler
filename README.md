@@ -94,7 +94,7 @@ This project is currently a local utility tool and does not have a live deployme
 
 3. **Compile the Java source files:**
    ```sh
-   javac -d bin src/Main.java src/main/*.java
+   javac -d bin src/Main.java src/utilities/*.java
    ```
 
 ## Running the Program
