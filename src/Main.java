@@ -18,10 +18,10 @@ public class Main {
          * (e.g. // TASK 1, // TASK 2)
          */
         AtomicInteger taskSequenceTracker = new AtomicInteger(0);
+        FileUtils fileUtil;
 
         try {
-            FileUtils fileUtil;
-            ConsoleUtils.printTitle();
+            DisplayUtils.printTitle();
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(

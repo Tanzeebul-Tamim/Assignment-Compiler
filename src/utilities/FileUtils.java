@@ -303,7 +303,7 @@ public class FileUtils {
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
             System.out.println("\nThank you for exploring this tool.");
         } catch (IOException err) {
-            ConsoleUtils.printError();
+            DisplayUtils.printError();
         }
     }
 }

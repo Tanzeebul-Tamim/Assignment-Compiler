@@ -5,7 +5,7 @@ import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class InputUtils extends BaseUtils {
+public final class InputUtils extends BaseUtils {
     public static String name;
     public static int id;
     public static int assignmentNo;
@@ -21,7 +21,7 @@ public class InputUtils extends BaseUtils {
             "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
     };
 
-    // Method to generate output file name
+    // Method to generate output file name using user data
     public static String getFileName() {
         String studentIdentity = String.format("%02d", assignmentNo) + "_" + id + "_" + name;
         String fileName = "Assignment " + studentIdentity;
@@ -37,26 +37,6 @@ public class InputUtils extends BaseUtils {
         fileExtension();
         ConsoleUtils.clearConsole();
         directoryPath();
-    }
-
-    // Method to display a user prompt for selecting multiple input options
-    public static void choiceCountLoop(int choiceCount) {
-        if (choiceCount > 5) {
-            System.out.printf("(1-%d).\n", choiceCount);
-
-        } else {
-            for (int i = 1; i <= choiceCount; i++) {
-                if (i == 1) {
-                    System.out.print("(");
-                }
-
-                if (i == choiceCount) {
-                    System.out.printf("or %d).\n", i);
-                } else {
-                    System.out.printf("%d, ", i);
-                }
-            }
-        }
     }
 
     // Method to collect user input from multiple input options
@@ -94,10 +74,10 @@ public class InputUtils extends BaseUtils {
             try {
                 if (choices.length > 0) {
                     System.out.print("\nEnter your choice ");
-                    choiceCountLoop(choices.length);
+                    DisplayUtils.choiceCountLoop(choices.length);
                 } else {
                     System.out.print("Enter a number within the valid range ");
-                    choiceCountLoop(fileCount);
+                    DisplayUtils.choiceCountLoop(fileCount);
                 }
 
                 input = sc.nextLine().trim();
@@ -122,7 +102,7 @@ public class InputUtils extends BaseUtils {
                 if (!input.matches("\\d+")) {
                     System.out
                             .print("\nError: Invalid Input! Please enter a numeric value.\n");
-                    choiceCountLoop(choices.length);
+                    DisplayUtils.choiceCountLoop(choices.length);
                     continue;
                 }
 
@@ -132,7 +112,7 @@ public class InputUtils extends BaseUtils {
                 if (choice < 1 || choice > upperBound) {
                     System.out.print(
                             "\nError: Invalid Input! Please enter a numeric value corresponding to one of the options ");
-                    choiceCountLoop(upperBound);
+                    DisplayUtils.choiceCountLoop(upperBound);
                     choice = 0;
                     continue;
                 }

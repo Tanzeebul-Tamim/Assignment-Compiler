@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class SequenceUtils extends BaseUtils {
+public final class SequenceUtils extends BaseUtils {
     // Detects sequence among file names
     public static String[][] sequenceFiles(List<String> fileNames) throws InterruptedException {
         // Storing ordered and unordered files in separate arrays
@@ -65,7 +65,7 @@ public class SequenceUtils extends BaseUtils {
                 }
             }
 
-            ConsoleUtils.printAndReset("Falling back to manual sequencing...", 1500);
+            DisplayUtils.printAndReset("Falling back to manual sequencing...", 1500);
             remainingFileNames = sequenceManually(remainingFileNames);
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some don't
@@ -102,8 +102,8 @@ public class SequenceUtils extends BaseUtils {
             }
 
             Thread.sleep(1000);
-            ConsoleUtils.printAndReset("Falling back to manual sequencing...", 1500);
-            
+            DisplayUtils.printAndReset("Falling back to manual sequencing...", 1500);
+
             remainingFileNames = null;
             sequencedFileNames = sequenceManually(allFileNames);
 
@@ -121,7 +121,7 @@ public class SequenceUtils extends BaseUtils {
                     }
                 }
 
-                ConsoleUtils.printAndReset("Proceeding with automatic file arrangement...", 1500);
+                DisplayUtils.printAndReset("Proceeding with automatic file arrangement...", 1500);
             }
         }
 
@@ -152,7 +152,7 @@ public class SequenceUtils extends BaseUtils {
                     ConsoleUtils.clearConsole();
                     System.out.printf("Please manually review the %d files that were found in the provided path:\n\n",
                             fileNames.length);
-                    ConsoleUtils.printNotes();
+                    DisplayUtils.printNotes();
                 }
 
                 if (count == fileNames.length - 1) {
@@ -206,7 +206,7 @@ public class SequenceUtils extends BaseUtils {
                                     System.out.printf(
                                             "Please manually review the %d files that were found in the provided path:\n\n",
                                             fileNames.length);
-                                    ConsoleUtils.printNotes();
+                                    DisplayUtils.printNotes();
 
                                     for (int j = startIdx; j < i; j++) {
                                         String fileName_history = fileNames[j];
@@ -218,7 +218,7 @@ public class SequenceUtils extends BaseUtils {
 
                                         System.out.println(prompt_history);
                                         System.out.print("Enter a number within the valid range ");
-                                        InputUtils.choiceCountLoop(fileNames.length);
+                                        DisplayUtils.choiceCountLoop(fileNames.length);
                                         System.out.println(input);
                                         System.out.println("\n");
                                     }
