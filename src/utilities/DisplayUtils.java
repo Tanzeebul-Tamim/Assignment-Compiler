@@ -10,13 +10,13 @@ public final class DisplayUtils extends BaseUtils {
         String title3 = "' Automate, Organize, & Submit with Ease!";
 
         ConsoleUtils.clearConsole();
-        typewriter(title1, title2, title3, 6);
+        typewriter(title1, title2, title3, 15, 380);
 
-        Thread.sleep(1000);
+        Thread.sleep(sleep);
         System.out.println("\n");
 
         System.out.println("YYou can press Ctrl + C anytime to terminate the program.\n");
-        Thread.sleep(3000);
+        Thread.sleep(sleep * 3);
         ConsoleUtils.clearConsole();
 
         System.out.println(
@@ -24,13 +24,43 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println("(e.g., Assignment 03_24100000_Joe Brooks.txt)\n");
     }
 
+    // Prints the filenames being processed
+    public static void printFileNames(String[] fileNames, String[] inputHistory) {
+        for (int i = 0; i < fileNames.length;) {
+            String fileName = fileNames[i];
+            String userInput = inputHistory[i];
+
+            if (fileName != null) {
+                if (userInput == null) {
+                    System.out.printf("   %s. %s\n",
+                            String.format("%02d", ++i),
+                            fileName);
+                } else {
+                    try {
+                        int choiceInt = Integer.parseInt(userInput);
+
+                        System.out.printf("   %s. %s -> Assigned: %s\n",
+                                String.format("%02d", ++i),
+                                fileName,
+                                String.format("%02d", choiceInt));
+                    } catch (NumberFormatException err) {
+                        System.out.printf("   %s. %s -> Skipped\n",
+                                String.format("%02d", ++i),
+                                fileName);
+                    }
+                }
+            }
+        }
+    }
+
     // Prints user prompts to guide the user
-    public static void printNotes() {
-        System.out.println("Note:");
-        System.out.println(" - Type 'Skip' to exclude this file.");
-        System.out.println(" - Type 'Previous' to go back to the previous file.");
-        System.out.println(" - Type 'Restart' to restart the sequencing process.");
-        System.out.println(" - Type 'Merge' to combine this file with the previous file.");
+    public static void printOptions(int optionCount) {
+        System.out.println("Options:");
+        System.out.printf(" - Enter a sequence number (1-%d) to assign to this file.\n", optionCount);
+        System.out.println(" - Enter \"Skip\" to exclude this file.");
+        System.out.println(" - Enter \"Previous\" to go back to the previous file.");
+        System.out.println(" - Enter \"Restart\" to restart the sequencing process.");
+        System.out.println(" - Enter \"Merge\" to combine this file with the previous file.");
         System.out.println();
     }
 
@@ -44,18 +74,20 @@ public final class DisplayUtils extends BaseUtils {
     }
 
     // Displays a message to the user & resets the console
-    public static void printAndReset(String message, long waitTime) throws InterruptedException {
-        ConsoleUtils.pressEnter();
+    public static void printAndReset(String message, boolean pressEnter) throws InterruptedException {
+        if (pressEnter)
+            ConsoleUtils.pressEnter();
+
         ConsoleUtils.clearConsole();
         System.out.println(message);
-        Thread.sleep(waitTime); // Wait for 'waitTime' seconds
+        Thread.sleep(sleep); // Wait for 'waitTime' seconds
         ConsoleUtils.clearConsole();
     }
 
     // Method to display a user prompt for selecting multiple input options
     public static void choiceCountLoop(int choiceCount) {
         if (choiceCount > 5) {
-            System.out.printf("(1-%d).\n", choiceCount);
+            System.out.printf("(1-%d):\n", choiceCount);
 
         } else {
             for (int i = 1; i <= choiceCount; i++) {
@@ -64,7 +96,7 @@ public final class DisplayUtils extends BaseUtils {
                 }
 
                 if (i == choiceCount) {
-                    System.out.printf("or %d).\n", i);
+                    System.out.printf("or %d):\n", i);
                 } else {
                     System.out.printf("%d, ", i);
                 }
@@ -77,10 +109,9 @@ public final class DisplayUtils extends BaseUtils {
             String introText,
             String mainContent,
             String outroText,
-            int milliseconds)
+            int charInterval,
+            int wordInterval)
             throws InterruptedException {
-
-        String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         // Prepare the full title (intro + main + outro)
         String fullTitle = introText + " " + mainContent + " " + outroText;
@@ -89,14 +120,14 @@ public final class DisplayUtils extends BaseUtils {
         String underline1 = "_".repeat(fullTitle.length());
         String underline2 = "-".repeat(fullTitle.length());
 
-        Thread.sleep(550);
+        Thread.sleep(sleep);
 
         // Print First underline
         System.out.println(underline1);
         System.out.println(underline2);
 
         // Print Empty line for spacing
-        System.out.println("");
+        System.out.println();
 
         // Print Second underline
         System.out.println(underline1);
@@ -107,22 +138,23 @@ public final class DisplayUtils extends BaseUtils {
         System.out.print("\033[A");
         System.out.print("\033[A");
 
-        Thread.sleep(550);
+        Thread.sleep(sleep);
 
         // Typing simulation for the title (intro + main + outro)
         StringBuilder titleBuilder = new StringBuilder();
+
         // Type intro text
         if (!introText.isEmpty()) {
             for (String word : introText.split(" ")) {
                 System.out.print(word + " ");
-                Thread.sleep(500); // 1-second interval between words
+                Thread.sleep(wordInterval); // Sets a specified interval between words
             }
         }
 
         // Type main content with random characters (typewriter effect)
         for (char letter : mainContent.toCharArray()) {
             while (true) {
-                char randomChar = letters.charAt(new Random().nextInt(letters.length()));
+                char randomChar = mainContent.charAt(new Random().nextInt(mainContent.length()));
                 System.out.print("\r" + introText + titleBuilder + randomChar);
 
                 if (letter == randomChar) {
@@ -135,7 +167,7 @@ public final class DisplayUtils extends BaseUtils {
                     break;
                 }
 
-                Thread.sleep(milliseconds); // Adjust typing speed
+                Thread.sleep(charInterval); // Adjust typing speed
             }
         }
 
@@ -143,7 +175,7 @@ public final class DisplayUtils extends BaseUtils {
         if (!outroText.isEmpty()) {
             for (String word : outroText.split(" ")) {
                 System.out.print(word + " ");
-                Thread.sleep(500); // 1-second interval between words
+                Thread.sleep(wordInterval); // Sets a specified interval between words
             }
         }
 

@@ -6,7 +6,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -70,7 +72,8 @@ public class FileUtils {
 
         // Checks for invalid arguments
         if (categorizedFileNames == null || categorizedFileNames.length < 2) {
-            throw new IllegalArgumentException("Must pass an array of strings containing at least two non-null arrays of strings.");
+            throw new IllegalArgumentException(
+                    "Must pass an array of strings containing at least two non-null arrays of strings.");
         }
 
         // Stores the files separately in 2 new arrays
@@ -172,7 +175,7 @@ public class FileUtils {
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
-        Thread.sleep(1000);
+        Thread.sleep(BaseUtils.sleep);
 
         // Prints the name of files that have unsupported extensions
         System.out.println("Files with Unsupported extensions:");
@@ -180,11 +183,10 @@ public class FileUtils {
         for (File file : unsupportedFiles) {
             System.out.printf("   %s. %s\n",
                     String.format("%02d", ++fileCount),
-                    file.getName(),
                     file.getName());
         }
 
-        Thread.sleep(1000);
+        Thread.sleep(BaseUtils.sleep);
     }
 
     /*
@@ -243,7 +245,7 @@ public class FileUtils {
     }
 
     // Writes the content read by readFiles() method and generates a .txt file
-    public void writeFiles() {
+    public void writeFiles() throws NumberFormatException, InputMismatchException, NoSuchElementException, InterruptedException {
         String outputPath = filePath + File.separator + this.fileName + ".txt";
         File outputFile = new File(outputPath);
 
@@ -251,12 +253,12 @@ public class FileUtils {
         if (outputFile.exists()) {
             String prompt1 = "Error: A file with the name '" + this.fileName
                     + ".txt' already exists in the directory.\n";
-            String prompt2 = "Choose and Option:";
+            String prompt2 = "Choose an Option:";
+            String[] choices = { "Overwrite", "Create New Version", "Skip" };
 
             int choice = Integer
                     .parseInt(
-                            InputUtils.getUserChoice(prompt1, prompt2, 0, null, "Overwrite", "Create New Version",
-                                    "Skip"));
+                            InputUtils.getUserChoice(prompt1, prompt2, 0, null, choices));
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");

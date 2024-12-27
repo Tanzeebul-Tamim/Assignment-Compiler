@@ -50,7 +50,7 @@ public final class SequenceUtils extends BaseUtils {
             sequencedFileNames = null;
 
             System.out.println("\nNo sequence detected!");
-            Thread.sleep(1000);
+            Thread.sleep(sleep);
 
             // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
@@ -65,12 +65,12 @@ public final class SequenceUtils extends BaseUtils {
                 }
             }
 
-            DisplayUtils.printAndReset("Falling back to manual sequencing...", 1500);
+            DisplayUtils.printAndReset("Falling back to manual sequencing...", true);
             remainingFileNames = sequenceManually(remainingFileNames);
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some don't
             System.out.println("\nNot all files follow the sequence.");
-            Thread.sleep(1000);
+            Thread.sleep(sleep);
 
             // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
@@ -86,7 +86,7 @@ public final class SequenceUtils extends BaseUtils {
             }
 
             fileCount = 0;
-            Thread.sleep(1000);
+            Thread.sleep(sleep);
 
             // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
@@ -101,17 +101,28 @@ public final class SequenceUtils extends BaseUtils {
                 }
             }
 
-            Thread.sleep(1000);
-            DisplayUtils.printAndReset("Falling back to manual sequencing...", 1500);
+            Thread.sleep(sleep);
 
-            remainingFileNames = null;
-            sequencedFileNames = sequenceManually(allFileNames);
+            String prompt1 = "Some files already have sequences.";
+            String prompt2 = "Would you like to:";
+            String[] choices = { "Keep them unchanged (process only non-sequenced files)?", "Re-sequence all files?" };
+            int choice = Integer.parseInt(InputUtils.getUserChoice(prompt1, prompt2, 0, null, choices));
+
+            Thread.sleep(sleep);
+            DisplayUtils.printAndReset("Falling back to manual sequencing...", false);
+
+            if (choice == 1) {
+
+            } else {
+                remainingFileNames = null;
+                sequencedFileNames = sequenceManually(allFileNames);
+            }
 
         } else { // Case 3: All files maintain sequence
             // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nThe following sequence has been detected:");
-                Thread.sleep(1000);
+                Thread.sleep(sleep);
 
                 for (String fileName : sequencedFileNames) {
                     if (fileName != null) {
@@ -121,7 +132,7 @@ public final class SequenceUtils extends BaseUtils {
                     }
                 }
 
-                DisplayUtils.printAndReset("Proceeding with automatic file arrangement...", 1500);
+                DisplayUtils.printAndReset("Proceeding with automatic file arrangement...", true);
             }
         }
 
@@ -136,25 +147,26 @@ public final class SequenceUtils extends BaseUtils {
     }
 
     // Handles the manual reordering of the unordered file names
-    private static String[] sequenceManually(String[] fileNames) {
-        ConsoleUtils.clearPreviousLines(1);
+    private static String[] sequenceManually(String[] fileNames) throws InterruptedException {
         String[] sequencedFileNames = new String[fileNames.length]; // Stores the final sequenced array of filenames
         String[] keywords = { "Skip", "Previous", "Restart", "Merge" }; // Specified keywords for specified actions
-        String[] input_history = new String[fileNames.length]; // Stores user input history
 
-        int count = 0;
+        String[] inputHistory = new String[fileNames.length]; // Stores user input history
+        String prompt = "Please manually review the following files and assign sequence numbers to organize them:";
 
-        traverseFileNames: for (int i = 0; i < fileNames.length; i++) {
+        traverseFileNames: for (int i = 0, count = 0; i < fileNames.length; i++) {
+            ConsoleUtils.clearConsole();
+
+            if (i == 0)
+                Thread.sleep(sleep);
+
+            System.out.println(prompt);
+            DisplayUtils.printFileNames(fileNames, inputHistory);
+            System.out.println("....\n");
+
             String fileName = fileNames[i];
 
             if (fileName != null) {
-                if (i % 5 == 0) {
-                    ConsoleUtils.clearConsole();
-                    System.out.printf("Please manually review the %d files that were found in the provided path:\n\n",
-                            fileNames.length);
-                    DisplayUtils.printNotes();
-                }
-
                 if (count == fileNames.length - 1) {
                     // Automatically places the last file in the last remaining slot
                     for (int j = 0; j < sequencedFileNames.length; j++) {
@@ -165,25 +177,26 @@ public final class SequenceUtils extends BaseUtils {
                     }
                 }
 
-                String number = String.format("%02d", i + 1);
-                String prompt = number + ". " + "Please assign a sequence number to the file '" + fileName + "':";
+                if (i == 0)
+                    Thread.sleep(sleep);
+
+                DisplayUtils.printOptions(fileNames.length); // Displays the available actions & options
+
+                String fileNumber = String.format("%02d", i + 1);
+                String totalFiles = String.format("%02d", fileNames.length);
+                String current = "> Current File: \"" + fileName + "\" (File no:" + fileNumber + " of " + totalFiles
+                        + ")";
+                System.out.println(current + "\n"); // Displays the current iterative file name and number
 
                 // Gets user input
-                String choice = InputUtils.getUserChoice(prompt, null, fileNames.length, keywords);
-
-                if (!choice.equals("Previous") &&
-                        !choice.equals("Restart") &&
-                        !choice.equals("Merge")) {
-                    input_history[i] = choice;
-                }
-
-                int choiceInt = 0;
+                String choice = InputUtils.getUserChoice(null, null, fileNames.length, keywords);
 
                 try { // Tries to convert the user input into an integer
-                    choiceInt = Integer.parseInt(choice);
+                    int choiceInt = Integer.parseInt(choice);
 
                     // Then sets the file in the specified index to maintain a sequence
                     sequencedFileNames[choiceInt - 1] = fileName;
+                    inputHistory[i] = choice; // Also preserves the user input history
                     count++;
 
                 } catch (NumberFormatException err) { // Executes, if fails to convert input into an integer
@@ -193,39 +206,14 @@ public final class SequenceUtils extends BaseUtils {
                     // Logics for different specified actions
                     switch (choice) {
                         case "skip" -> { // Skips the current file
+                            inputHistory[i] = choice; // Preserves the user input history
                             count++;
                             continue;
                         }
                         case "previous" -> { // Goes back to the previous file
                             if (i > 0) {
-                                // Prints the previous files again if the file sequenced has been cleared
-                                if (i % 5 == 0) {
-                                    int startIdx = i - 5;
-
-                                    ConsoleUtils.clearConsole();
-                                    System.out.printf(
-                                            "Please manually review the %d files that were found in the provided path:\n\n",
-                                            fileNames.length);
-                                    DisplayUtils.printNotes();
-
-                                    for (int j = startIdx; j < i; j++) {
-                                        String fileName_history = fileNames[j];
-                                        String number_history = String.format("%02d", j + 1);
-                                        String prompt_history = number_history + ". "
-                                                + "Please assign a sequence number to the file '"
-                                                + fileName_history + "':";
-                                        String input = input_history[j];
-
-                                        System.out.println(prompt_history);
-                                        System.out.print("Enter a number within the valid range ");
-                                        DisplayUtils.choiceCountLoop(fileNames.length);
-                                        System.out.println(input);
-                                        System.out.println("\n");
-                                    }
-                                } else {
-                                    ConsoleUtils.clearPreviousLines(10);
-                                    i -= 2;
-                                }
+                                ConsoleUtils.clearPreviousLines(10);
+                                i -= 2;
                             } else { // Prevents going back to the previous file when already on the first file
                                 System.out.println("\nAlready at the first file.");
                                 i -= 1;

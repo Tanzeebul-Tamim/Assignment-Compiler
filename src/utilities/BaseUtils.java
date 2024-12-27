@@ -6,6 +6,8 @@ package utilities;
  * Extend this class to enforce non-instantiable behavior in utility classes.
  */
 public abstract class BaseUtils {
+    protected static int sleep = 800; // Interval time in millisecond
+
     protected BaseUtils() {
         throw new UnsupportedOperationException("Utility class cannot be instantiated!");
     }

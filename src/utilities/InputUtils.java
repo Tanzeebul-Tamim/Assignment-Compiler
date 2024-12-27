@@ -57,12 +57,13 @@ public final class InputUtils extends BaseUtils {
         }
 
         if (prompt2 != null) {
-            System.out.printf("%s\n", prompt2);
+            System.out.printf("\n%s\n", prompt2);
         }
 
         if (choices.length > 0) {
             for (int i = 0; i < choices.length; i++) {
-                System.out.printf("(%d) %s", i + 1, choices[i]);
+                String serial = String.format("%02d", i + 1);
+                System.out.printf("   %s. %s", serial, choices[i]);
 
                 if (i != choices.length - 1) {
                     System.out.println();
@@ -73,7 +74,7 @@ public final class InputUtils extends BaseUtils {
         while (choice == 0) {
             try {
                 if (choices.length > 0) {
-                    System.out.print("\nEnter your choice ");
+                    System.out.print("\n\nEnter your choice ");
                     DisplayUtils.choiceCountLoop(choices.length);
                 } else {
                     System.out.print("Enter a number within the valid range ");
@@ -116,8 +117,6 @@ public final class InputUtils extends BaseUtils {
                     choice = 0;
                     continue;
                 }
-
-                System.out.println();
 
             } catch (InputMismatchException | IllegalArgumentException err) {
                 System.out.printf("\nError: Input out of range! Enter a number between 1 to %d\n", choices.length);
