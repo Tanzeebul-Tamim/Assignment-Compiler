@@ -43,6 +43,12 @@ This project provides a utility to compile multiple assignment files into a sing
 
 - **_Error Handling:_** Validates input files to ensure they exist and are formatted correctly.
 
+- **_Handling Files with the Same Name:_** If a file with the same name already exists in the directory, the program provides 3 options to the user:
+
+  - **Overwrite:** Replace the existing file with the new one.
+  - **Create New Version:** Generate a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
+  - **Skip:** Skip the current file writing operation entirely.
+
 - **_Tailored for BRAC University:_** Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
 
 - **_Future GUI Support:_** Plans for a graphical user interface to simplify the process further.
