@@ -49,7 +49,7 @@ public final class SequenceUtils extends BaseUtils {
         if (!atLeastOneNumeric) { // Case 1: No files maintain sequence
             sequencedFileNames = null;
 
-            System.out.println("\nNo sequence detected!");
+            System.out.println("No sequence detected!");
             Thread.sleep(sleep);
 
             // Prints the non sequenced files
@@ -153,11 +153,12 @@ public final class SequenceUtils extends BaseUtils {
 
         String[] inputHistory = new String[fileNames.length]; // Stores user input history
         String prompt = "Please manually review the following files and assign sequence numbers to organize them:";
+        boolean firstTime = true;
 
-        traverseFileNames: for (int i = 0, count = 0; i < fileNames.length; i++) {
+        traverseFileNames: for (int i = 0; i < fileNames.length; i++) {
             ConsoleUtils.clearConsole();
 
-            if (i == 0)
+            if (firstTime)
                 Thread.sleep(sleep);
 
             System.out.println(prompt);
@@ -167,19 +168,10 @@ public final class SequenceUtils extends BaseUtils {
             String fileName = fileNames[i];
 
             if (fileName != null) {
-                if (count == fileNames.length - 1) {
-                    // Automatically places the last file in the last remaining slot
-                    for (int j = 0; j < sequencedFileNames.length; j++) {
-                        if (sequencedFileNames[j] == null) {
-                            sequencedFileNames[j] = fileName; // Assign the last file to the empty slot
-                            break traverseFileNames;
-                        }
-                    }
-                }
-
-                if (i == 0)
+                if (firstTime)
                     Thread.sleep(sleep);
 
+                firstTime = false;
                 DisplayUtils.printOptions(fileNames.length); // Displays the available actions & options
 
                 String fileNumber = String.format("%02d", i + 1);
@@ -194,10 +186,35 @@ public final class SequenceUtils extends BaseUtils {
                 try { // Tries to convert the user input into an integer
                     int choiceInt = Integer.parseInt(choice);
 
+                    // Checks for duplicate entries
+                    for (String input : inputHistory) {
+                        if (input != null) {
+                            try {
+                                int inputInt = Integer.parseInt(input);
+
+                                // Prints error & skips the current iteration if duplicate entry found
+                                if (inputInt == choiceInt) {
+                                    // Move cursor up
+                                    ConsoleUtils.moveCursor(1, 1);
+
+                                    String errorMsg = "\rError: Duplicate Serial Number! Please enter an unique serial number.";
+                                    System.out.println(errorMsg);
+
+                                    Thread.sleep(sleep);
+                                    i--;
+
+                                    continue traverseFileNames;
+                                }
+                            } catch (NumberFormatException err) {
+                                // Skips the validation process if the entry is a specified keyword
+                                continue;
+                            }
+                        }
+                    }
+
                     // Then sets the file in the specified index to maintain a sequence
                     sequencedFileNames[choiceInt - 1] = fileName;
                     inputHistory[i] = choice; // Also preserves the user input history
-                    count++;
 
                 } catch (NumberFormatException err) { // Executes, if fails to convert input into an integer
                     // Looks for specific keywords to perform specific actions
@@ -207,20 +224,23 @@ public final class SequenceUtils extends BaseUtils {
                     switch (choice) {
                         case "skip" -> { // Skips the current file
                             inputHistory[i] = choice; // Preserves the user input history
-                            count++;
                             continue;
                         }
                         case "previous" -> { // Goes back to the previous file
                             if (i > 0) {
-                                ConsoleUtils.clearPreviousLines(10);
                                 i -= 2;
+                                inputHistory[i + 1] = null;
+                                ConsoleUtils.clearPreviousLines(10);
                             } else { // Prevents going back to the previous file when already on the first file
-                                System.out.println("\nAlready at the first file.");
-                                i -= 1;
+                                // Move cursor up
+                                ConsoleUtils.moveCursor(1, 2);
+
+                                System.out.println("\rAlready at the first file.");
+                                Thread.sleep(sleep);
+                                i--;
                             }
                         }
                         case "restart" -> { // Resets the whole reordering process
-                            count = 0;
                             return sequenceManually(fileNames);
                         }
                         case "merge" -> { // Merges multiple files together

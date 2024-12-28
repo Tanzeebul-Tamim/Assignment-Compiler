@@ -16,7 +16,7 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println("\n");
 
         System.out.println("YYou can press Ctrl + C anytime to terminate the program.\n");
-        Thread.sleep(sleep * 3);
+        Thread.sleep(sleep * 2);
         ConsoleUtils.clearConsole();
 
         System.out.println(
@@ -55,8 +55,25 @@ public final class DisplayUtils extends BaseUtils {
 
     // Prints user prompts to guide the user
     public static void printOptions(int optionCount) {
+        String range;
+
+        if (optionCount > 4) {
+            range = "(1-" + optionCount + ")";
+
+        } else {
+            range = "(";
+
+            for (int i = 1; i <= optionCount; i++) {
+                if (i == optionCount) {
+                    range += "or " + i + ")";
+                } else {
+                    range += i + ", ";
+                }
+            }
+        }
+
         System.out.println("Options:");
-        System.out.printf(" - Enter a sequence number (1-%d) to assign to this file.\n", optionCount);
+        System.out.printf(" - Enter a sequence number %s to assign to this file.\n", range);
         System.out.println(" - Enter \"Skip\" to exclude this file.");
         System.out.println(" - Enter \"Previous\" to go back to the previous file.");
         System.out.println(" - Enter \"Restart\" to restart the sequencing process.");
@@ -86,7 +103,7 @@ public final class DisplayUtils extends BaseUtils {
 
     // Method to display a user prompt for selecting multiple input options
     public static void choiceCountLoop(int choiceCount) {
-        if (choiceCount > 5) {
+        if (choiceCount > 4) {
             System.out.printf("(1-%d):\n", choiceCount);
 
         } else {
@@ -134,9 +151,7 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println(underline2);
 
         // Move cursor up
-        System.out.print("\033[A");
-        System.out.print("\033[A");
-        System.out.print("\033[A");
+        ConsoleUtils.moveCursor(1, 3);
 
         Thread.sleep(sleep);
 
@@ -180,8 +195,6 @@ public final class DisplayUtils extends BaseUtils {
         }
 
         // Move cursor down
-        System.out.print("\033");
-        System.out.print("\033");
-        System.out.print("\033 ");
+        ConsoleUtils.moveCursor(0, 3);
     }
 }

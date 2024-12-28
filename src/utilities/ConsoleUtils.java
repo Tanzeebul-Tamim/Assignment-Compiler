@@ -7,14 +7,21 @@ public final class ConsoleUtils extends BaseUtils {
         InputUtils.sc.nextLine();
     }
 
-    // Method to clear out the console
+    // Utility method to print ANSI escape sequences
+    private static void executeAnsiCommand(String command, int times) {
+        for (int i = 0; i < times; i++) {
+            System.out.print(command);
+        }
+        System.out.flush();
+    }
+
+    // Method to clear the console
     public static void clearConsole() {
         try {
             if (System.getProperty("os.name").contains("Windows")) {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
-                System.out.print("\033[H\033[2J");
-                System.out.flush();
+                executeAnsiCommand("\033[H\033[2J", 1); // Clear screen and move cursor to home
             }
         } catch (Exception err) {
             terminate(false);
@@ -24,10 +31,23 @@ public final class ConsoleUtils extends BaseUtils {
     // Method to remove previous lines and reset cursor
     public static void clearPreviousLines(int lines) {
         for (int i = 0; i < lines; i++) {
-            System.out.print("\033[A"); // Move cursor up
-            System.out.print("\033[2K"); // Clear line
+            executeAnsiCommand("\033[A", 1); // Move cursor up
+            executeAnsiCommand("\033[2K", 1); // Clear current line
         }
-        System.out.flush();
+    }
+
+    // Method to move cursor position
+    public static void moveCursor(int direction, int lineCount) {
+        // int direction: 1 -> Move up, 0 -> Move down
+        if (direction != 1 && direction != 0) {
+            throw new IllegalArgumentException("Direction must be 1 (up) or 0 (down)!");
+        }
+
+        // Determine the escape sequence based on direction
+        String escapeSequence = (direction == 1) ? "\033[A" : "\033[B";
+
+        // Use utility method to move the cursor
+        executeAnsiCommand(escapeSequence, lineCount);
     }
 
     // Trims unnecessary white spaces and applies proper capitalization to username

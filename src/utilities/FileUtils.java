@@ -167,7 +167,6 @@ public class FileUtils {
         return separatedFiles;
     }
 
-    // Todo: Remove error messages using the clear previous line method
     // Validates file extensions, retains supported files, and logs unsupported ones
     public void filterFiles() throws InterruptedException {
         List<File>[] validFiles = validateFileExtension();
@@ -175,15 +174,19 @@ public class FileUtils {
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
-        Thread.sleep(BaseUtils.sleep);
-
+        
         // Prints the name of files that have unsupported extensions
-        System.out.println("Files with Unsupported extensions:");
+        if (unsupportedFiles.length > 0) {
+            Thread.sleep(BaseUtils.sleep);
+            System.out.println("Files with Unsupported extensions:");
 
-        for (File file : unsupportedFiles) {
-            System.out.printf("   %s. %s\n",
-                    String.format("%02d", ++fileCount),
-                    file.getName());
+            for (File file : unsupportedFiles) {
+                System.out.printf("   %s. %s\n",
+                        String.format("%02d", ++fileCount),
+                        file.getName());
+            }
+
+            System.out.println();
         }
 
         Thread.sleep(BaseUtils.sleep);
@@ -245,7 +248,8 @@ public class FileUtils {
     }
 
     // Writes the content read by readFiles() method and generates a .txt file
-    public void writeFiles() throws NumberFormatException, InputMismatchException, NoSuchElementException, InterruptedException {
+    public void writeFiles()
+            throws NumberFormatException, InputMismatchException, NoSuchElementException, InterruptedException {
         String outputPath = filePath + File.separator + this.fileName + ".txt";
         File outputFile = new File(outputPath);
 

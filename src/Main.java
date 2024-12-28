@@ -7,8 +7,6 @@ import utilities.*;
 // Todo: Clear error messages properly
 // Todo: Don't let clear-console trigger if there's an error while collecting user input
 // Todo: Prevent file overwriting while manually sequencing
-// Todo: Handle not pointing to the previous file properly while manual sequencing
-// Todo: Ask if the user wants to keep the existing sequence or not when partial sequence detected
 public class Main {
     public static void main(String[] args) {
         /*
@@ -20,7 +18,7 @@ public class Main {
         FileUtils fileUtil;
 
         try {
-            DisplayUtils.printTitle();
+            DisplayUtils.printTitle(); 
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(
@@ -44,7 +42,6 @@ public class Main {
         } catch (Exception err) {
             // Catching other unintentional & unexpected exceptions and terminating the
             // program
-            System.out.println(err.getClass());
             ConsoleUtils.terminate(false);
 
         } finally {
