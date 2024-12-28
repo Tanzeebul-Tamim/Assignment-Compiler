@@ -1,30 +1,63 @@
 package utilities;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public final class DisplayUtils extends BaseUtils {
-    // Method to print title
+    private static int charInterval;
+    private static int wordInterval;
+
+    static {
+        charInterval = 17;
+        wordInterval = 380;
+    }
+
+    // Print title
     public static void printTitle() throws InterruptedException {
         String title1 = "Welcome to the '";
         String title2 = "Assignment File Generator";
         String title3 = "' Automate, Organize, & Submit with Ease!";
 
         ConsoleUtils.clearConsole();
-        typewriter(title1, title2, title3, 15, 380);
+        typewriter(title1, title2, title3, true, false);
 
-        Thread.sleep(sleep);
-        System.out.println("\n");
+        Thread.sleep(interval);
+        System.out.print("\n");
 
-        System.out.println("YYou can press Ctrl + C anytime to terminate the program.\n");
-        Thread.sleep(sleep * 2);
+        System.out.println("You can press Ctrl + C anytime to terminate the program.\n");
+        Thread.sleep(errorInterval);
         ConsoleUtils.clearConsole();
-
-        System.out.println(
-                "The output file will be saved using the following naming format: `Assignment XX_Your-ID_Your-Name`");
-        System.out.println("(e.g., Assignment 03_24100000_Joe Brooks.txt)\n");
     }
 
-    // Prints the filenames being processed
+    // Print outro message
+    public static void printOutro() throws InterruptedException {
+        Thread.sleep(interval);
+        ConsoleUtils.clearConsole();
+
+        String title1 = "Thank you for exploring this tool.\n";
+        String title2 = "Developed by: Tanzeebul Tamim".toUpperCase();
+
+        typewriter(title1, title2, "", false, true);
+    }
+
+    // Print assignment file naming format
+    public static void printNamingFormat(String assignmentNo, String id, String name, String extension) {
+        ConsoleUtils.clearConsole();
+        System.out.printf(
+                "The output file will be saved using the following naming format: \"Assignment %s_%s_%s.txt\"\n",
+                assignmentNo.isEmpty() ? "XX" : assignmentNo,
+                id.isEmpty() ? "Your-ID" : id,
+                name.isEmpty() ? "Your-Name" : name);
+        System.out.println(" - (e.g., Assignment 03_24100000_Joe Brooks.txt)\n");
+
+        System.out.printf("Assignment No: %s\n", assignmentNo);
+        System.out.printf("Your ID: %s\n", id);
+        System.out.printf("Your Name: %s\n", name);
+        System.out.printf("File Extension: %s\n\n", extension);
+    }
+
+    // Print the filenames being processed
     public static void printFileNames(String[] fileNames, String[] inputHistory) {
         for (int i = 0; i < fileNames.length;) {
             String fileName = fileNames[i];
@@ -53,7 +86,7 @@ public final class DisplayUtils extends BaseUtils {
         }
     }
 
-    // Prints user prompts to guide the user
+    // Print user prompts to guide the user
     public static void printOptions(int optionCount) {
         String range;
 
@@ -81,7 +114,7 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println();
     }
 
-    // Method to print error
+    // Print probable reasons of write errors
     public static void printError() {
         System.out.println("An error occurred while trying to write the output file.");
         System.out.println("Possible reasons:");
@@ -90,18 +123,36 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println("- The file path might be invalid or corrupted.");
     }
 
-    // Displays a message to the user & resets the console
+    // Print user input related error messages
+    public static void printError(String message, int sleep) throws InterruptedException {
+        printError(message, sleep, 0);
+    }
+
+    // Print user input related error messages with multiple choices
+    public static void printError(String message, int sleep, int choices) throws InterruptedException {
+        ConsoleUtils.moveCursor(1, 1); // Move cursor up
+        System.out.printf("\rError: %s", message);
+
+        if (choices > 0)
+            choiceCountLoop(choices);
+
+        Thread.sleep(sleep);
+        ConsoleUtils.clearPreviousLines(3);
+        System.out.println("\r");
+    }
+
+    // Display a message to the user & resets the console
     public static void printAndReset(String message, boolean pressEnter) throws InterruptedException {
         if (pressEnter)
             ConsoleUtils.pressEnter();
 
         ConsoleUtils.clearConsole();
         System.out.println(message);
-        Thread.sleep(sleep); // Wait for 'waitTime' seconds
+        Thread.sleep(interval); // Wait for 'waitTime' seconds
         ConsoleUtils.clearConsole();
     }
 
-    // Method to display a user prompt for selecting multiple input options
+    // Print a user prompt for selecting multiple input options
     public static void choiceCountLoop(int choiceCount) {
         if (choiceCount > 4) {
             System.out.printf("(1-%d):\n", choiceCount);
@@ -121,13 +172,13 @@ public final class DisplayUtils extends BaseUtils {
         }
     }
 
-    // Simulates Typewriter effect
+    // Simulate Typewriter effect
     private static void typewriter(
             String introText,
             String mainContent,
             String outroText,
-            int charInterval,
-            int wordInterval)
+            boolean underline,
+            boolean newline)
             throws InterruptedException {
 
         // Prepare the full title (intro + main + outro)
@@ -137,23 +188,24 @@ public final class DisplayUtils extends BaseUtils {
         String underline1 = "_".repeat(fullTitle.length());
         String underline2 = "-".repeat(fullTitle.length());
 
-        Thread.sleep(sleep);
+        Thread.sleep(interval);
 
-        // Print First underline
-        System.out.println(underline1);
-        System.out.println(underline2);
+        if (underline) {
+            // Print First underline
+            System.out.println(underline1);
+            System.out.println(underline2);
 
-        // Print Empty line for spacing
-        System.out.println();
+            // Print Empty line for spacing
+            System.out.println();
 
-        // Print Second underline
-        System.out.println(underline1);
-        System.out.println(underline2);
+            // Print Second underline
+            System.out.println(underline1);
+            System.out.println(underline2);
 
-        // Move cursor up
-        ConsoleUtils.moveCursor(1, 3);
-
-        Thread.sleep(sleep);
+            // Move cursor up
+            ConsoleUtils.moveCursor(1, 3);
+            Thread.sleep(interval);
+        }
 
         // Typing simulation for the title (intro + main + outro)
         StringBuilder titleBuilder = new StringBuilder();
@@ -166,18 +218,22 @@ public final class DisplayUtils extends BaseUtils {
             }
         }
 
+        // Other necessary characters that need to be checked
+        List<Character> checkChars = Arrays.asList(' ', '-', ',', '\'', '!', ':');
+
         // Type main content with random characters (typewriter effect)
         for (char letter : mainContent.toCharArray()) {
             while (true) {
                 char randomChar = mainContent.charAt(new Random().nextInt(mainContent.length()));
-                System.out.print("\r" + introText + titleBuilder + randomChar);
 
-                if (letter == randomChar) {
-                    // Appending the letters
-                    titleBuilder.append(letter);
-                    break;
-                } else if (letter == ' ' || letter == '-' || letter == ',' || letter == '\'' || letter == '!') {
-                    // Appending other necessary characters
+                if (newline) {
+                    System.out.print("\r" + titleBuilder + randomChar);
+                } else {
+                    System.out.print("\r" + introText + titleBuilder + randomChar);
+                }
+
+                if (letter == randomChar || checkChars.contains(letter)) {
+                    // Appending the letters & other necessary characters
                     titleBuilder.append(letter);
                     break;
                 }

@@ -174,10 +174,10 @@ public class FileUtils {
         this.fileList = validFiles[0].toArray(new File[0]);
         File[] unsupportedFiles = validFiles[1].toArray(new File[0]);
         int fileCount = 0;
-        
+
         // Prints the name of files that have unsupported extensions
         if (unsupportedFiles.length > 0) {
-            Thread.sleep(BaseUtils.sleep);
+            Thread.sleep(BaseUtils.interval);
             System.out.println("Files with Unsupported extensions:");
 
             for (File file : unsupportedFiles) {
@@ -189,7 +189,7 @@ public class FileUtils {
             System.out.println();
         }
 
-        Thread.sleep(BaseUtils.sleep);
+        Thread.sleep(BaseUtils.interval);
     }
 
     /*
@@ -306,8 +306,9 @@ public class FileUtils {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
             writer.write(content.toString());
             writer.newLine();
+
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
-            System.out.println("\nThank you for exploring this tool.");
+            DisplayUtils.printOutro();
         } catch (IOException err) {
             DisplayUtils.printError();
         }

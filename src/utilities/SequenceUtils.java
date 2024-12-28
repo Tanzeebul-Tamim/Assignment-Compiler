@@ -50,7 +50,7 @@ public final class SequenceUtils extends BaseUtils {
             sequencedFileNames = null;
 
             System.out.println("No sequence detected!");
-            Thread.sleep(sleep);
+            Thread.sleep(interval);
 
             // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
@@ -70,7 +70,7 @@ public final class SequenceUtils extends BaseUtils {
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some don't
             System.out.println("\nNot all files follow the sequence.");
-            Thread.sleep(sleep);
+            Thread.sleep(interval);
 
             // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
@@ -86,7 +86,7 @@ public final class SequenceUtils extends BaseUtils {
             }
 
             fileCount = 0;
-            Thread.sleep(sleep);
+            Thread.sleep(interval);
 
             // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
@@ -101,14 +101,14 @@ public final class SequenceUtils extends BaseUtils {
                 }
             }
 
-            Thread.sleep(sleep);
+            Thread.sleep(interval);
 
             String prompt1 = "Some files already have sequences.";
             String prompt2 = "Would you like to:";
             String[] choices = { "Keep them unchanged (process only non-sequenced files)?", "Re-sequence all files?" };
             int choice = Integer.parseInt(InputUtils.getUserChoice(prompt1, prompt2, 0, null, choices));
 
-            Thread.sleep(sleep);
+            Thread.sleep(interval);
             DisplayUtils.printAndReset("Falling back to manual sequencing...", false);
 
             if (choice == 1) {
@@ -122,7 +122,7 @@ public final class SequenceUtils extends BaseUtils {
             // Prints the detected sequenced files
             if (sequencedFileNames.length > 0) {
                 System.out.println("\nThe following sequence has been detected:");
-                Thread.sleep(sleep);
+                Thread.sleep(interval);
 
                 for (String fileName : sequencedFileNames) {
                     if (fileName != null) {
@@ -159,7 +159,7 @@ public final class SequenceUtils extends BaseUtils {
             ConsoleUtils.clearConsole();
 
             if (firstTime)
-                Thread.sleep(sleep);
+                Thread.sleep(interval);
 
             System.out.println(prompt);
             DisplayUtils.printFileNames(fileNames, inputHistory);
@@ -169,7 +169,7 @@ public final class SequenceUtils extends BaseUtils {
 
             if (fileName != null) {
                 if (firstTime)
-                    Thread.sleep(sleep);
+                    Thread.sleep(interval);
 
                 firstTime = false;
                 DisplayUtils.printOptions(fileNames.length); // Displays the available actions & options
@@ -200,7 +200,7 @@ public final class SequenceUtils extends BaseUtils {
                                     String errorMsg = "\rError: Duplicate Serial Number! Please enter an unique serial number.";
                                     System.out.println(errorMsg);
 
-                                    Thread.sleep(sleep);
+                                    Thread.sleep(errorInterval);
                                     i--;
 
                                     continue traverseFileNames;
@@ -232,11 +232,10 @@ public final class SequenceUtils extends BaseUtils {
                                 inputHistory[i + 1] = null;
                                 ConsoleUtils.clearPreviousLines(10);
                             } else { // Prevents going back to the previous file when already on the first file
-                                // Move cursor up
-                                ConsoleUtils.moveCursor(1, 2);
+                                ConsoleUtils.moveCursor(1, 2); // Move cursor up
 
                                 System.out.println("\rAlready at the first file.");
-                                Thread.sleep(sleep);
+                                Thread.sleep(errorInterval);
                                 i--;
                             }
                         }

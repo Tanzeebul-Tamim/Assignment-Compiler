@@ -1,17 +1,12 @@
 package utilities;
 
 public final class ConsoleUtils extends BaseUtils {
-    // Method to halt the program until user enters something
-    public static void pressEnter() {
-        System.out.println("\nPress Enter to continue....");
-        InputUtils.sc.nextLine();
-    }
-
     // Utility method to print ANSI escape sequences
     private static void executeAnsiCommand(String command, int times) {
         for (int i = 0; i < times; i++) {
             System.out.print(command);
         }
+
         System.out.flush();
     }
 
@@ -28,12 +23,18 @@ public final class ConsoleUtils extends BaseUtils {
         }
     }
 
-    // Method to remove previous lines and reset cursor
+    // Method to remove current line/previous lines and reset cursor
     public static void clearPreviousLines(int lines) {
+        // int lines: 0 -> clear current line
+        // int lines: x -> clear previous `x` lines
+
         for (int i = 0; i < lines; i++) {
-            executeAnsiCommand("\033[A", 1); // Move cursor up
             executeAnsiCommand("\033[2K", 1); // Clear current line
+
+            if (i < lines - 1)
+                executeAnsiCommand("\033[A", 1); // Move cursor up
         }
+
     }
 
     // Method to move cursor position
@@ -48,6 +49,12 @@ public final class ConsoleUtils extends BaseUtils {
 
         // Use utility method to move the cursor
         executeAnsiCommand(escapeSequence, lineCount);
+    }
+
+    // Method to halt the program until user enters something
+    public static void pressEnter() {
+        System.out.println("\nPress Enter to continue....");
+        InputUtils.sc.nextLine();
     }
 
     // Trims unnecessary white spaces and applies proper capitalization to username
@@ -70,6 +77,8 @@ public final class ConsoleUtils extends BaseUtils {
 
     // Method to gracefully handle unexpected errors & termination of the program
     public static void terminate(boolean intentional) {
+        // clearConsole();
+
         if (intentional) {
             // For Intentional termination of the program
             System.out.println("\n\nProgram terminated! Thank you for exploring this tool.");

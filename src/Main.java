@@ -4,9 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import utilities.*;
 
 // Todo: Implement merge files feature
-// Todo: Clear error messages properly
 // Todo: Don't let clear-console trigger if there's an error while collecting user input
-// Todo: Prevent file overwriting while manually sequencing
+// Todo: Implement partial sequencing feature when partial sequence detecting
 public class Main {
     public static void main(String[] args) {
         /*
@@ -18,7 +17,7 @@ public class Main {
         FileUtils fileUtil;
 
         try {
-            DisplayUtils.printTitle(); 
+            DisplayUtils.printTitle();
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(
@@ -29,12 +28,13 @@ public class Main {
                     taskSequenceTracker);
 
             fileUtil.filterFiles(); // Ensures that the file extensions are valid before processing
-            fileUtil.setFileList(SequenceUtils.sequenceFiles(fileUtil.getFileNames())); // Sets file list sequentially
+            fileUtil.setFileList(SequenceUtils.sequenceFiles(fileUtil.getFileNames()));
+            // Sets file list sequentially
 
             fileUtil.readFiles(); // Reads file contents from the files located in the provided path
             fileUtil.writeFiles(); // Generates the output file and writes the content in it
 
-        } catch (NoSuchElementException err) {
+        } catch (NoSuchElementException | InterruptedException err) {
             // Catching NoSuchElementException when user presses Ctrl+C to terminate the
             // program
             ConsoleUtils.terminate(true);
