@@ -226,13 +226,17 @@ Following these steps will ensure a smooth file compilation process.
 
 To help you test the program, a [**`Sample Folder`**](./sample) is included in the root directory.
 
-**Sample Folder Contents:** 
+**Sample Folder Contents:**
 It contains:
 
 - Sample files with supported extensions and various naming formats (e.g., [**`Task1.java`**](./sample/Task1.java), [**`task_03.java`**](./sample/task_03.java), [**`task__7.java`**](./sample/task__7.java)) to showcase the program's ability to detect sequences in different naming formats.
 - Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./sample/NonSequenced.java), [**`Unsequenced.java`**](./sample/Unsequenced.java)).
 - Files with unsupported extensions (e.g., [**`Unsupported.py`**](./sample/Unsupported.py), [**`Unsupported.ts`**](./sample/Unsupported.ts), [**`Unsupported.txt`**](./sample/Unsupported.txt)), [**`Unsupported.ipynb`**](./sample/Unsupported.ipynb)).
   > **Note:** Some files have supported extensions but are demonstrated as unsupported in the `Sample Folder` to illustrate that the `Sample Folder` is specifically designed for testing _**Java Files**_ as the desired file type.
+- Two generated output files:
+  - [**`Assignment 05_24100000_Joe Brooks.txt`**](./sample/Assignment%2005_24100000_Joe%20Brooks.txt)
+  - [**`Assignment 05_24100000_Joe Brooks(1).txt`**](<./sample/Assignment%2005_24100000_Joe%20Brooks(1).txt>)  
+    These files demonstrate how the program generates output files with proper naming formats and how it handles cases where files with the same name already exist.
 
 **How to Use the Sample Folder:**
 
