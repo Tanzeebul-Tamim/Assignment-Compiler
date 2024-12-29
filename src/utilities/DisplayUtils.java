@@ -32,13 +32,11 @@ public final class DisplayUtils extends BaseUtils {
 
     // Print outro message
     public static void printOutro() throws InterruptedException {
-        Thread.sleep(interval);
-        ConsoleUtils.clearConsole();
-
         String title1 = "Thank you for exploring this tool.\n";
         String title2 = "Developed by: Tanzeebul Tamim".toUpperCase();
 
         typewriter(title1, title2, "", false, true);
+        ConsoleUtils.clearPreviousLines(2);
     }
 
     // Print assignment file naming format
@@ -114,7 +112,19 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println();
     }
 
-    // Print probable reasons of write errors
+    // Print guidelines for organizing files
+    public static void printGuidelines() {
+        System.out.println(
+                "Important Note:\nPlease ensure that the selected directory contains only the assignment files.\n\nFor best results:\n"
+                        +
+                        " - Organize your assignment files in a dedicated folder.\n" +
+                        " - Verify that all files are relevant before proceeding.\n" +
+                        " - If possible, name the files using a sequence (e.g., `Task-01`, `Task-02`, or `Task1`, `Task2`, etc.).\n"
+                        +
+                        "   (If you're unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
+    }
+
+    // Print probable reasons of write-errors
     public static void printError() {
         System.out.println("An error occurred while trying to write the output file.");
         System.out.println("Possible reasons:");
@@ -124,20 +134,23 @@ public final class DisplayUtils extends BaseUtils {
     }
 
     // Print user input related error messages
-    public static void printError(String message, int sleep) throws InterruptedException {
-        printError(message, sleep, 0);
+    public static void printError(String message) throws InterruptedException {
+        printError(message, 0, 0, 0);
     }
 
-    // Print user input related error messages with multiple choices
-    public static void printError(String message, int sleep, int choices) throws InterruptedException {
+    // V2 - customizable line parameter, interval time & prints multiple choices
+    public static void printError(String message, int interval, int choices, int clearLines) throws InterruptedException {
+        clearLines = clearLines == 0 ? 3 : clearLines;
+        interval = interval == 0 ? errorInterval : interval;
+
         ConsoleUtils.moveCursor(1, 1); // Move cursor up
         System.out.printf("\rError: %s", message);
 
         if (choices > 0)
             choiceCountLoop(choices);
 
-        Thread.sleep(sleep);
-        ConsoleUtils.clearPreviousLines(3);
+        Thread.sleep(interval);
+        ConsoleUtils.clearPreviousLines(clearLines);
         System.out.println("\r");
     }
 
@@ -154,8 +167,16 @@ public final class DisplayUtils extends BaseUtils {
 
     // Print a user prompt for selecting multiple input options
     public static void choiceCountLoop(int choiceCount) {
+        choiceCountLoop(choiceCount, true);
+    }
+
+    // Print a prompt for selecting multiple input options, also prints new line
+    public static void choiceCountLoop(int choiceCount, boolean newLine) {
         if (choiceCount > 4) {
-            System.out.printf("(1-%d):\n", choiceCount);
+            System.out.printf("(1-%d): ", choiceCount);
+
+            if (newLine)
+                System.out.println();
 
         } else {
             for (int i = 1; i <= choiceCount; i++) {
@@ -164,7 +185,10 @@ public final class DisplayUtils extends BaseUtils {
                 }
 
                 if (i == choiceCount) {
-                    System.out.printf("or %d):\n", i);
+                    System.out.printf("or %d): ", i);
+
+                    if (newLine)
+                        System.out.println();
                 } else {
                     System.out.printf("%d, ", i);
                 }

@@ -4,8 +4,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import utilities.*;
 
 // Todo: Implement merge files feature
-// Todo: Don't let clear-console trigger if there's an error while collecting user input
 // Todo: Implement partial sequencing feature when partial sequence detecting
+// Todo: Update readme, add about demo file (add a redirecting link in the doc) and update the prompt instructions
 public class Main {
     public static void main(String[] args) {
         /*
@@ -27,9 +27,15 @@ public class Main {
                     InputUtils.fileExtension,
                     taskSequenceTracker);
 
+            // Ask the user if they want to sequence the files or keep their original order.
+            int choice = InputUtils.promptForFileSequencing();
+
             fileUtil.filterFiles(); // Ensures that the file extensions are valid before processing
-            fileUtil.setFileList(SequenceUtils.sequenceFiles(fileUtil.getFileNames()));
-            // Sets file list sequentially
+
+            if (choice == 1) {
+                // Sets file list sequentially
+                fileUtil.setFileList(SequenceUtils.sequenceFiles(fileUtil.getFileNames()));
+            }
 
             fileUtil.readFiles(); // Reads file contents from the files located in the provided path
             fileUtil.writeFiles(); // Generates the output file and writes the content in it

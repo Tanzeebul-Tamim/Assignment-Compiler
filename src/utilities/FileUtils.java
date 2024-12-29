@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -67,7 +66,7 @@ public class FileUtils {
         return fileNames;
     }
 
-    // Combines the received sequenced & non-sequenced file-lists sequentially
+    // Combines the received sequenced & unsequenced file-lists sequentially
     public void setFileList(String[][] categorizedFileNames) {
 
         // Checks for invalid arguments
@@ -95,7 +94,7 @@ public class FileUtils {
         // Stores the final combined file list
         File[] combinedFiles = new File[sequencedFiles.length + nonSequencedFiles.length];
 
-        // Combines both sequenced and non-sequenced arrays sequentially
+        // Combines both sequenced and unsequenced arrays sequentially
         System.arraycopy(sequencedFiles, 0, combinedFiles, 0, sequencedFiles.length);
         System.arraycopy(nonSequencedFiles, 0, combinedFiles, sequencedFiles.length, nonSequencedFiles.length);
 
@@ -249,20 +248,31 @@ public class FileUtils {
 
     // Writes the content read by readFiles() method and generates a .txt file
     public void writeFiles()
-            throws NumberFormatException, InputMismatchException, NoSuchElementException, InterruptedException {
+            throws NoSuchElementException,
+            InterruptedException {
         String outputPath = filePath + File.separator + this.fileName + ".txt";
         File outputFile = new File(outputPath);
 
         // Checks for existing file with same name to avoid unwanted file overwriting
         if (outputFile.exists()) {
             String prompt1 = "Error: A file with the name '" + this.fileName
-                    + ".txt' already exists in the directory.\n";
+                    + ".txt' already exists in the directory.";
             String prompt2 = "Choose an Option:";
             String[] choices = { "Overwrite", "Create New Version", "Skip" };
 
+            Thread.sleep(BaseUtils.interval);
+
             int choice = Integer
                     .parseInt(
-                            InputUtils.getUserChoice(prompt1, prompt2, 0, null, choices));
+                            InputUtils.getUserChoice(
+                                    prompt1,
+                                    prompt2,
+                                    0,
+                                    true,
+                                    false,
+                                    0,
+                                    null,
+                                    choices));
 
             if (choice == 1) {
                 System.out.println("Overwriting the existing file...");
@@ -308,6 +318,10 @@ public class FileUtils {
             writer.newLine();
 
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
+
+            System.out.println();
+            Thread.sleep(BaseUtils.interval);
+
             DisplayUtils.printOutro();
         } catch (IOException err) {
             DisplayUtils.printError();

@@ -57,21 +57,21 @@ public final class InputUtils extends BaseUtils {
 
                 if (input.isEmpty()) {
                     error = "Assignment-no cannot be left empty.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
 
                 if (input.startsWith("-")) {
                     error = "Invalid Input! Assignment-no must be a positive numeric value.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
 
                 if (!input.matches("\\d+")) {
                     error = "Invalid Input! Assignment-no must contain only numeric characters.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
@@ -80,14 +80,14 @@ public final class InputUtils extends BaseUtils {
 
                 if (assignmentNo < 1 || assignmentNo > 15) {
                     error = "Invalid Input! Assignment-no must be between 1 and 15.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     assignmentNo = 0;
                 }
 
             } catch (NumberFormatException err) {
                 error = "Invalid Input! Assignment-no must be a numeric value.";
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
 
             }
         }
@@ -105,28 +105,28 @@ public final class InputUtils extends BaseUtils {
 
                 if (input.isEmpty()) {
                     error = "ID cannot be left empty.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
 
                 if (input.startsWith("-")) {
                     error = "Invalid Input! ID must contain only positive numeric characters.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
 
                 if (!input.matches("\\d+")) {
                     error = "Invalid Input! ID must contain only numeric characters.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
 
                 if (input.length() != 8) {
                     error = "Invalid Input! ID must be exactly 8 digits.";
-                    DisplayUtils.printError(error, errorInterval);
+                    DisplayUtils.printError(error);
 
                     continue;
                 }
@@ -135,7 +135,7 @@ public final class InputUtils extends BaseUtils {
 
             } catch (NumberFormatException err) {
                 error = "Invalid Input! ID must be a numeric value.";
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
 
             }
         }
@@ -151,7 +151,7 @@ public final class InputUtils extends BaseUtils {
 
             if (input.isEmpty()) {
                 error = "Name cannot be left empty.";
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
 
                 continue;
             }
@@ -171,7 +171,14 @@ public final class InputUtils extends BaseUtils {
 
             if (input.isEmpty()) {
                 error = "File extension cannot be left empty.";
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
+
+                continue;
+            }
+
+            if (input.matches("\\d+")) {
+                error = "Invalid Input! File extensions must not contain numeric characters.";
+                DisplayUtils.printError(error);
 
                 continue;
             }
@@ -192,33 +199,24 @@ public final class InputUtils extends BaseUtils {
                 Thread.sleep(interval);
             } else {
                 error = "Invalid Input! Allowed extensions are: " + String.join(", ", validExtensions);
-                DisplayUtils.printError(error, errorInterval + 1200);
+                DisplayUtils.printError(error, errorInterval + 1200, 0, 0);
             }
         }
     }
 
     // Collect the directory path where the assignment files are located
     private static void directoryPath() throws InterruptedException {
-        System.out.println(
-                "Important Note:\nPlease ensure that the selected directory contains only the assignment files.\n\nFor best results:\n"
-                        +
-                        " - Organize your assignment files in a dedicated folder.\n" +
-                        " - Verify that all files are relevant before proceeding.\n" +
-                        " - If possible, name the files using a sequence (e.g., `Task-01`, `Task-02`, or `Task1`, `Task2`, etc.).\n"
-                        +
-                        "   (If you're unable or not permitted to rename them, you will be prompted to manually arrange them in the correct order.)\n");
-
+        DisplayUtils.printGuidelines();
         ConsoleUtils.pressEnter();
         ConsoleUtils.clearPreviousLines(3);
 
         while (true) {
             System.out.println("Please copy the path to your assignment folder and enter here:");
             String input = sc.nextLine().trim();
-            ConsoleUtils.clearConsole();
 
             if (input.isEmpty()) {
                 error = "Directory path cannot be left empty.";
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
 
                 continue;
             }
@@ -233,12 +231,15 @@ public final class InputUtils extends BaseUtils {
                 File[] fileList = directory.listFiles();
 
                 if (fileList == null || fileList.length == 0) {
-                    error = "File extension cannot be left empty.";
-                    DisplayUtils.printError(error, errorInterval);
+                    error = "Directory is empty! No files found in the directory.";
+                    DisplayUtils.printError(error);
 
                 } else {
                     folderPath = directory.getAbsolutePath();
                     InputUtils.fileList = fileList;
+
+                    ConsoleUtils.clearConsole();
+                    Thread.sleep(interval);
                     return;
                 }
 
@@ -249,7 +250,7 @@ public final class InputUtils extends BaseUtils {
                     error = "The provided path is not a valid directory.";
                 }
 
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
             }
         }
     }
@@ -259,6 +260,9 @@ public final class InputUtils extends BaseUtils {
             String prompt1,
             String prompt2,
             int fileCount,
+            boolean newLine,
+            boolean clearConsole,
+            int clearLines,
             String[] keywords,
             String... choices)
             throws InputMismatchException,
@@ -267,41 +271,59 @@ public final class InputUtils extends BaseUtils {
 
         int choice = 0;
         String input = "";
-
-        if (prompt1 != null) {
-            System.out.printf("\n%s\n", prompt1);
-        }
-
-        if (prompt2 != null) {
-            System.out.printf("\n%s\n", prompt2);
-        }
-
-        if (choices.length > 0) {
-            for (int i = 0; i < choices.length; i++) {
-                String serial = String.format("%02d", i + 1);
-                System.out.printf("   %s. %s", serial, choices[i]);
-
-                if (i != choices.length - 1) {
-                    System.out.println();
-                }
-            }
-        }
+        clearLines = clearLines == 0 ? 6 : clearLines;
 
         while (choice == 0) {
+            if (prompt1 != null) {
+                if (newLine)
+                    System.out.print("\n");
+
+                System.out.printf("%s\n", prompt1);
+            }
+
+            if (prompt2 != null) {
+                System.out.printf("\n%s\n", prompt2);
+            }
+
+            if (choices.length > 0) {
+                for (int i = 0; i < choices.length; i++) {
+                    String serial = String.format("%02d", i + 1);
+                    System.out.printf("   %s. %s", serial, choices[i]);
+
+                    if (i != choices.length - 1) {
+                        System.out.println();
+                    }
+                }
+            }
+
             try {
                 if (choices.length > 0) {
                     System.out.print("\n\nEnter your choice ");
                     DisplayUtils.choiceCountLoop(choices.length);
+
                 } else {
-                    System.out.print("Enter a number within the valid range ");
+                    System.out.print("\nEnter a number within ");
                     DisplayUtils.choiceCountLoop(fileCount);
                 }
 
                 input = sc.nextLine().trim();
 
                 if (input.isEmpty()) {
-                    error = "You must pick one of the options.";
-                    DisplayUtils.printError(error, errorInterval);
+                    error = "You must pick one of the options!";
+                    DisplayUtils.printError(error, 0, 0, clearLines);
+
+                    if (clearConsole)
+                        ConsoleUtils.clearConsole();
+
+                    continue;
+                }
+
+                if (input.startsWith("-")) {
+                    error = "Invalid Input! Must be a positive numeric value.";
+                    DisplayUtils.printError(error, 0, 0, clearLines);
+
+                    if (clearConsole)
+                        ConsoleUtils.clearConsole();
 
                     continue;
                 }
@@ -312,7 +334,6 @@ public final class InputUtils extends BaseUtils {
                         String keyword = keywords[i];
 
                         if (input.equalsIgnoreCase(keyword)) {
-                            System.out.println();
                             return keyword;
                         }
                     }
@@ -320,7 +341,10 @@ public final class InputUtils extends BaseUtils {
 
                 if (!input.matches("\\d+")) {
                     error = "Invalid Input! Please enter a numeric value.";
-                    DisplayUtils.printError(error, errorInterval, choices.length);
+                    DisplayUtils.printError(error, 0, 0, clearLines);
+
+                    if (clearConsole)
+                        ConsoleUtils.clearConsole();
 
                     continue;
                 }
@@ -329,21 +353,51 @@ public final class InputUtils extends BaseUtils {
                 int upperBound = (choices.length > 0) ? choices.length : fileCount;
 
                 if (choice < 1 || choice > upperBound) {
-                    error = "Invalid Input! Enter a number from the options ";
-                    DisplayUtils.printError(error, errorInterval, upperBound);
+                    error = "Invalid Input! Enter a number within the valid range.";
+                    DisplayUtils.printError(error, 0, 0, clearLines);
 
                     choice = 0;
+
+                    if (clearConsole)
+                        ConsoleUtils.clearConsole();
+
                     continue;
                 }
 
             } catch (InputMismatchException | IllegalArgumentException err) {
                 error = "Input out of range! Enter a number between 1 to " + choices.length;
-                DisplayUtils.printError(error, errorInterval);
+                DisplayUtils.printError(error);
+
+                if (clearConsole)
+                    ConsoleUtils.clearConsole();
 
             }
 
         }
 
         return input;
+    }
+
+    // Ask the user if they want to sequence the files or keep their original order.
+    public static int promptForFileSequencing()
+            throws InterruptedException {
+        String prompt = "Would you like the files to be sequenced by adding unique serial numbers?";
+        String[] choices = { "Files will be sequenced.", "Files will remain unsequenced." };
+        int choice = Integer.parseInt(
+                InputUtils.getUserChoice(
+                        prompt,
+                        null,
+                        0,
+                        false,
+                        true,
+                        0,
+                        null,
+                        choices));
+
+        Thread.sleep(BaseUtils.interval);
+        DisplayUtils.printAndReset(choices[choice - 1] + "..", false);
+        ConsoleUtils.clearConsole();
+
+        return choice;
     }
 }

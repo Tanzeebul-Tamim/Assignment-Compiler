@@ -69,7 +69,7 @@ public final class SequenceUtils extends BaseUtils {
             remainingFileNames = sequenceManually(remainingFileNames);
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some don't
-            System.out.println("\nNot all files follow the sequence.");
+            System.out.println("Not all files follow the sequence.");
             Thread.sleep(interval);
 
             // Prints the detected sequenced files
@@ -90,7 +90,7 @@ public final class SequenceUtils extends BaseUtils {
 
             // Prints the non sequenced files
             if (remainingFileNames.length > 0) {
-                System.out.println("\nRemaining non-sequenced files:");
+                System.out.println("\nRemaining unsequenced files:");
 
                 for (String fileName : remainingFileNames) {
                     if (fileName != null) {
@@ -101,15 +101,28 @@ public final class SequenceUtils extends BaseUtils {
                 }
             }
 
+            ConsoleUtils.pressEnter();
+            ConsoleUtils.clearConsole();
             Thread.sleep(interval);
 
             String prompt1 = "Some files already have sequences.";
             String prompt2 = "Would you like to:";
-            String[] choices = { "Keep them unchanged (process only non-sequenced files)?", "Re-sequence all files?" };
-            int choice = Integer.parseInt(InputUtils.getUserChoice(prompt1, prompt2, 0, null, choices));
+            String[] choices = { "Keep them unchanged (process only unsequenced files)?", "Re-sequence all files?" };
+            String[] results = { "Proceeding with the unsequenced files only.", "Re-sequencing all files." };
+
+            int choice = Integer.parseInt(
+                    InputUtils.getUserChoice(
+                            prompt1,
+                            prompt2,
+                            0,
+                            false,
+                            true,
+                            0,
+                            null,
+                            choices));
 
             Thread.sleep(interval);
-            DisplayUtils.printAndReset("Falling back to manual sequencing...", false);
+            DisplayUtils.printAndReset(results[choice - 1] + "..", false);
 
             if (choice == 1) {
 
@@ -181,7 +194,14 @@ public final class SequenceUtils extends BaseUtils {
                 System.out.println(current + "\n"); // Displays the current iterative file name and number
 
                 // Gets user input
-                String choice = InputUtils.getUserChoice(null, null, fileNames.length, keywords);
+                String choice = InputUtils.getUserChoice(
+                        null,
+                        null,
+                        fileNames.length,
+                        true,
+                        false,
+                        4,
+                        keywords);
 
                 try { // Tries to convert the user input into an integer
                     int choiceInt = Integer.parseInt(choice);
@@ -194,15 +214,9 @@ public final class SequenceUtils extends BaseUtils {
 
                                 // Prints error & skips the current iteration if duplicate entry found
                                 if (inputInt == choiceInt) {
-                                    // Move cursor up
-                                    ConsoleUtils.moveCursor(1, 1);
-
-                                    String errorMsg = "\rError: Duplicate Serial Number! Please enter an unique serial number.";
-                                    System.out.println(errorMsg);
-
-                                    Thread.sleep(errorInterval);
+                                    String error = "Duplicate Serial Number! Please enter an unique serial number.";
+                                    DisplayUtils.printError(error);
                                     i--;
-
                                     continue traverseFileNames;
                                 }
                             } catch (NumberFormatException err) {
@@ -232,10 +246,8 @@ public final class SequenceUtils extends BaseUtils {
                                 inputHistory[i + 1] = null;
                                 ConsoleUtils.clearPreviousLines(10);
                             } else { // Prevents going back to the previous file when already on the first file
-                                ConsoleUtils.moveCursor(1, 2); // Move cursor up
-
-                                System.out.println("\rAlready at the first file.");
-                                Thread.sleep(errorInterval);
+                                String error = "Already at the first file!";
+                                DisplayUtils.printError(error);
                                 i--;
                             }
                         }
