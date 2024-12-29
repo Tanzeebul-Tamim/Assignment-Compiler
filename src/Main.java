@@ -17,7 +17,7 @@ public class Main {
         FileUtils fileUtil;
 
         try {
-            // DisplayUtils.printTitle();
+            DisplayUtils.printTitle();
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(
@@ -39,6 +39,7 @@ public class Main {
 
             fileUtil.readFiles(); // Reads file contents from the files located in the provided path
             fileUtil.writeFiles(); // Generates the output file and writes the content in it
+            DisplayUtils.printOutro();
 
         } catch (NoSuchElementException | InterruptedException err) {
             // Catching NoSuchElementException when user presses Ctrl+C to terminate the

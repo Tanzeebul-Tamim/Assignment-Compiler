@@ -327,9 +327,7 @@ public class FileUtils {
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
 
             System.out.println();
-            Thread.sleep(BaseUtils.interval);
-
-            DisplayUtils.printOutro();
+            Thread.sleep(BaseUtils.interval);            
         } catch (IOException err) {
             DisplayUtils.printError();
         }
