@@ -11,47 +11,15 @@ This project provides a utility to compile multiple assignment files into a sing
 
 ## Table of Contents
 
-- [Project Features](#project-features)
 - [Project Availability](#project-availability)
 - [Used Packages and Technologies](#used-packages-and-technologies)
 - [Prerequisites](#prerequisites)
+- [Project Features](#project-features)
 - [Installation](#installation)
 - [Running the Program](#running-the-program)
 - [Demo Output File Example](#demo-output-file-example)
 - [Contributing](#contributing)
 - [License](#license)
-
-## Project Features
-
-- **_File Compilation:_** Combines multiple assignment files into a single `.txt` file with proper formatting. Each task is separated by comments like `// TASK 1`, `// TASK 2`.
-
-- **_Input Flexibility:_** The program allows you to specify which files to include in the compiled document.
-
-- **_Automated Naming Convention:_** Automatically names the output file using a standard format (`Assignment XX_Your-ID_Your-Name.txt`).
-
-- **_File Type Support:_** Supports multiple file extensions, including Java, Python, C, C++, HTML, CSS, JavaScript, TypeScript, and others. You can modify the supported file extensions directly in the code. The current supported extensions are:
-
-  ```java
-  String[] validExtensions = {
-      "java", "txt", "py", "cpp", "c", "cs", "js", "ts", "html", "css", "xml", "json"
-  };
-  ```
-
-- **_Subdirectory Handling:_** The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
-
-- **_Automated Task Sequence Detection:_** Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
-
-- **_Error Handling:_** Validates input files to ensure they exist and are formatted correctly.
-
-- **_Handling Files with the Same Name:_** If a file with the same name already exists in the directory, the program provides 3 options to the user:
-
-  - **Overwrite:** Replace the existing file with the new one.
-  - **Create New Version:** Generate a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
-  - **Skip:** Skip the current file writing operation entirely.
-
-- **_Tailored for BRAC University:_** Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
-
-- **_Future GUI Support:_** Plans for a graphical user interface to simplify the process further.
 
 ## Project Availability
 
@@ -77,7 +45,50 @@ This project is currently a local utility tool and does not have a live deployme
 - JDK 11 or higher
 - A text editor or IDE (e.g., IntelliJ IDEA, Eclipse, Visual Studio Code)
 
-## Installation
+---
+<details>
+<summary><h2 id="project-features">Project Features</h2></summary>
+
+- **_File Compilation:_** Combines multiple assignment files into a single `.txt` file with proper formatting. Each task is separated by comments like `// TASK 1`, `// TASK 2`.
+
+- **_Input Flexibility:_** The program allows you to specify which files to include in the compiled document.
+
+- **_Automated Naming Convention:_** Automatically names the output file using a standard format (`Assignment XX_Your-ID_Your-Name.txt`).
+
+- **_File Type Support:_** Supports multiple file extensions, including Java, Python, C, C++, HTML, CSS, JavaScript, TypeScript, and others. You can modify the supported file extensions directly in the code. The current supported extensions are:
+
+  - js
+  - ts
+  - html
+  - css
+  - xml
+  - txt
+  - java
+  - py
+  - cpp
+  - c
+  - cs
+
+- **_Subdirectory Handling:_** The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
+
+- **_Automated Task Sequence Detection:_** Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
+
+- **_Error Handling:_** Validates input files to ensure they exist and are formatted correctly.
+
+- **_Handling Files with the Same Name:_** If a file with the same name already exists in the directory, the program provides 3 options to the user:
+
+  - **Overwrite:** Replace the existing file with the new one.
+  - **Create New Version:** Generate a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
+  - **Skip:** Skip the current file writing operation entirely.
+
+- **_Tailored for BRAC University:_** Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
+
+- **_Future GUI Support:_** Plans for a graphical user interface to simplify the process further.
+</details>
+
+---
+<details>
+  <summary><h2 id="installation">Installation</h2></summary>
 
 1. **Clone the repository:**
 
@@ -96,8 +107,11 @@ This project is currently a local utility tool and does not have a live deployme
    ```sh
    javac -d bin src/Main.java src/utilities/*.java
    ```
+   </details>
 
-## Running the Program
+---
+<details>
+  <summary><h2 id="running-the-program">Running the Program</h2></summary>
 
 1.  **Navigate to the `bin` directory:**
 
@@ -175,7 +189,11 @@ This project is currently a local utility tool and does not have a live deployme
 
 Following these steps will ensure a smooth file compilation process.
 
-## Demo Output File Example
+</details>
+
+---
+<details>
+  <summary><h2 id="demo-output-file-example">Demo Output File Example</h2></summary>
 
 Here is a sample output generated by the program:
 
@@ -214,6 +232,12 @@ public class Task3 {
 ```
 
 This sample demonstrates how tasks are numbered and formatted consistently, ensuring compliance with BRAC University's assignment submission requirements. The program handles task numbering, file naming, and proper organization for effortless submissions.
+
+</details>
+
+---
+
+<br>
 
 ## Contributing
 
