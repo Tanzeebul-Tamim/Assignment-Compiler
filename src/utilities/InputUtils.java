@@ -407,11 +407,10 @@ public final class InputUtils extends BaseUtils {
         return input;
     }
 
-    // Ask the user if they want to sequence the files or keep their original order.
-    public static int promptForFileSequencing()
+    // Prompt the user to decide between options & handles the console operations
+    public static int getPreference(String prompt, String[] choices, String[] results)
             throws InterruptedException {
-        String prompt = "Would you like the files to be sequenced by adding unique serial numbers?";
-        String[] choices = { "Files will be sequenced.", "Files will remain unsequenced." };
+
         int choice = Integer.parseInt(
                 InputUtils.getUserChoice(
                         prompt,
@@ -424,7 +423,7 @@ public final class InputUtils extends BaseUtils {
                         choices));
 
         Thread.sleep(BaseUtils.interval);
-        DisplayUtils.printAndReset(choices[choice - 1] + "..", false);
+        DisplayUtils.printAndReset(results[choice - 1] + "..", false);
         ConsoleUtils.clearConsole();
 
         return choice;

@@ -107,7 +107,7 @@ public final class DisplayUtils extends BaseUtils {
         System.out.printf(" - Enter a sequence number %s to assign to this file.\n", range);
         System.out.println(" - Enter \"Skip\" to exclude this file.");
         System.out.println(" - Enter \"Previous\" to go back to the previous file and reassign its sequence number.");
-        System.out.println(" - Enter \"Restart\" to restart the sequencing process.");
+        System.out.println(" - Enter \"Reset\" to reset the sequencing process.");
         System.out.println(" - Enter \"Merge\" to combine this file with the previous file.");
         System.out.println();
     }

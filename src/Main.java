@@ -29,7 +29,9 @@ public class Main {
                     taskSequenceTracker);
 
             // Ask the user if they want to sequence the files or keep their original order.
-            int choice = InputUtils.promptForFileSequencing();
+            String prompt = "Would you like the files to be sequenced by adding unique serial numbers?";
+            String[] choices = { "Files will be sequenced.", "Files will remain unsequenced." };
+            int choice = InputUtils.getPreference(prompt, choices, choices);
 
             fileUtil.filterFiles(); // Ensures that the file extensions are valid before processing
 

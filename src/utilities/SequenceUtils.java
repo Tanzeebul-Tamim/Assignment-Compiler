@@ -186,7 +186,7 @@ public final class SequenceUtils extends BaseUtils {
         int length = bounds == null ? fileNames.length : bounds[1] - bounds[0];
 
         String[] sequencedFileNames = new String[length]; // Stores the final sequenced array of filenames
-        String[] keywords = { "Skip", "Previous", "Restart", "Merge" }; // Specified keywords for specified actions
+        String[] keywords = { "Skip", "Previous", "Reset", "Merge" }; // Specified keywords for specified actions
 
         String[] inputHistory = new String[fileNames.length]; // Stores user input history
         String prompt = "Please manually review the following files and assign sequence numbers to organize them:";
@@ -245,7 +245,7 @@ public final class SequenceUtils extends BaseUtils {
                                     continue traverseFileNames;
                                 }
                             } catch (NumberFormatException err) {
-                                // Skips the validation process if the entry is a specified keyword
+                                // Skips the iteration if the entry is a specified keyword
                                 continue;
                             }
                         }
@@ -276,7 +276,7 @@ public final class SequenceUtils extends BaseUtils {
                                 i--;
                             }
                         }
-                        case "restart" -> { // Resets the whole reordering process
+                        case "reset" -> { // Resets the whole reordering process
                             return sequenceManually(fileNames, false);
                         }
                         case "merge" -> { // Merges multiple files together
@@ -288,6 +288,25 @@ public final class SequenceUtils extends BaseUtils {
             }
         }
 
-        return sequencedFileNames;
+        ConsoleUtils.clearConsole();
+        System.out.println(prompt);
+        DisplayUtils.printFileNames(fileNames, inputHistory);
+        System.out.println("....\n");
+
+        DisplayUtils.printOptions(length); // Displays the available actions & options
+        System.out.print('\n');
+
+        // Ask the user if they want to proceed with the sequence
+        prompt = "Are you sure you want to proceed with the current sequencing?";
+        String[] choices = { "Yes, proceed.", "No, restart the sequencing process." };
+        String[] results = { "Proceeding with the current sequencing.", "Restarting manual sequencing." };
+        int choice = InputUtils.getPreference(prompt, choices, results);
+
+        if (choice == 1) {
+            return sequencedFileNames;
+        } else {
+            return sequenceManually(fileNames, clearConsole, bounds);
+        }
+
     }
 }
