@@ -81,6 +81,8 @@ This project is currently a local utility tool and does not have a live deployme
 
 - **_Combining Multiple Files as One Task:_** The program also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
 
+- **_Removing Package Statements:_** The program automatically detects and removes `package` statements from the top of Java files. If a `package` statement is present, it is excluded from the generated output, ensuring that the file content starts immediately from the next statement, with trailing blank lines removed for a clean format.
+
 - **_Error Handling:_** Validates input files to ensure they exist and are formatted correctly.
 
 - **_Empty Directory Detection:_** The program can detect and reject empty directories if provided, ensuring only valid directories containing files are processed.
