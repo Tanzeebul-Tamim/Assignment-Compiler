@@ -227,7 +227,6 @@ Following these steps will ensure a smooth file compilation process.
 To help you test the program, a [**`Sample Folder`**](./sample) is included in the root directory.
 
 **Sample Folder Contents:**
-It contains:
 
 - Sample files with supported extensions and various naming formats (e.g., [**`Task1.java`**](./sample/Task1.java), [**`task_03.java`**](./sample/task_03.java), [**`task__7.java`**](./sample/task__7.java)) to showcase the program's ability to detect sequences in different naming formats.
 - Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./sample/NonSequenced.java), [**`Unsequenced.java`**](./sample/Unsequenced.java)).
@@ -264,8 +263,6 @@ Assignment 05_24100000_Joe Brooks.txt
 ```
 // TASK 1
 
-package sample;
-
 public class Task1 {
     public static void main(String[] args) {
         // This file demonstrates a simple sequential task (Task1)
@@ -276,8 +273,6 @@ public class Task1 {
 
 
 // TASK 2
-
-package sample;
 
 public class TASK___2 {
     public static void main(String[] args) {
@@ -290,8 +285,6 @@ public class TASK___2 {
 
 // TASK 3
 
-package sample;
-
 public class task_03 {
     public static void main(String[] args) {
         // This file demonstrates a naming convention with underscores (task_03)
@@ -303,8 +296,6 @@ public class task_03 {
 
 // TASK 4
 
-package sample;
-
 public class Task4 {
     public static void main(String[] args) {
         // This file demonstrates a simple sequential task (Task4)
@@ -315,8 +306,6 @@ public class Task4 {
 
 
 // TASK 5
-
-package sample;
 
 public class NonSequenced {
     public static void main(String[] args) {
