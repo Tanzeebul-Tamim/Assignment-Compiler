@@ -93,4 +93,10 @@ public final class ConsoleUtils extends BaseUtils {
 
         System.exit(0); // Exit program
     }
+
+    // Todo: Remove this method
+    // Method to gracefully handle unexpected errors & termination of the program
+    public static void terminate(boolean intentional, Exception err) throws Exception {
+        throw err;
+    }
 }

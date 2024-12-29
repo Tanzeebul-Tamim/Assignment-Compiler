@@ -1,4 +1,4 @@
-package demo;
+package sample;
 
 public class task_03 {
     public static void main(String[] args) {

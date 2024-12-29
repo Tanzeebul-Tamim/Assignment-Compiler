@@ -11,7 +11,9 @@ public abstract class BaseUtils {
     protected static int errorInterval;
 
     static {
-        interval = 1000;
+        // Todo
+        // interval = 1000;
+        interval = 300;
         errorInterval = interval * 2;
     }
 

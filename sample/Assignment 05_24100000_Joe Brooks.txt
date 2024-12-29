@@ -1,6 +1,6 @@
 // TASK 1
 
-package demo;
+package sample;
 
 public class Task1 {
     public static void main(String[] args) {
@@ -13,7 +13,7 @@ public class Task1 {
 
 // TASK 2
 
-package demo;
+package sample;
 
 public class TASK___2 {
     public static void main(String[] args) {
@@ -26,7 +26,7 @@ public class TASK___2 {
 
 // TASK 3
 
-package demo;
+package sample;
 
 public class task_03 {
     public static void main(String[] args) {
@@ -39,7 +39,7 @@ public class task_03 {
 
 // TASK 4
 
-package demo;
+package sample;
 
 public class Task4 {
     public static void main(String[] args) {
@@ -52,20 +52,20 @@ public class Task4 {
 
 // TASK 5
 
-package demo;
+package sample;
 
-public class Unsequenced {
+public class NonSequenced {
     public static void main(String[] args) {
         // This file doesn't follow a sequential naming convention
         // It is meant to test how the program handles files without a sequence
-        System.out.println("I am Unsequenced");
+        System.out.println("I am NonSequenced");
     }
 }
 
 
 // TASK 6
 
-package demo;
+package sample;
 
 public class Task6 {
     public static void main(String[] args) {
@@ -78,7 +78,7 @@ public class Task6 {
 
 // TASK 7
 
-package demo;
+package sample;
 
 public class task__7 {
     public static void main(String[] args) {
@@ -91,13 +91,26 @@ public class task__7 {
 
 // TASK 8
 
-package demo;
+package sample;
 
 public class Task8 {
     public static void main(String[] args) {
         // This file demonstrates a simple sequential task (Task8)
         // It helps test how the program handles files with standard naming formats (e.g., Task1, Task2)
         System.out.println("I am Task8");
+    }
+}
+
+
+// TASK 9
+
+package sample;
+
+public class Unsequenced {
+    public static void main(String[] args) {
+        // This file doesn't follow a sequential naming convention
+        // It is meant to test how the program handles files without a sequence
+        System.out.println("I am Unsequenced");
     }
 }
 

@@ -9,10 +9,10 @@ public final class SequenceUtils extends BaseUtils {
     public static String[][] sequenceFiles(List<String> fileNames) throws InterruptedException {
         // Storing ordered and unordered files in separate arrays
         String[] sequencedFileNames = new String[fileNames.size()];
-        String[] remainingFileNames = new String[fileNames.size()];
+        String[] nonSequencedFileNames = new String[fileNames.size()];
 
-        // arrays to store all file names
-        String[] allFileNames = fileNames.toArray(new String[0]);
+        // Arrays to store all file names
+        String[] combinedFileNames = fileNames.toArray(new String[0]);
         String[][] filteredFileName = new String[2][fileNames.size()];
 
         boolean sequenceExists = true;
@@ -42,7 +42,7 @@ public final class SequenceUtils extends BaseUtils {
 
             if (!found) {
                 sequenceExists = false;
-                remainingFileNames[j++] = fileName;
+                nonSequencedFileNames[j++] = fileName;
             }
         }
 
@@ -53,10 +53,10 @@ public final class SequenceUtils extends BaseUtils {
             Thread.sleep(interval);
 
             // Prints the non sequenced files
-            if (remainingFileNames.length > 0) {
+            if (nonSequencedFileNames.length > 0) {
                 System.out.println("\nFiles found:");
 
-                for (String fileName : remainingFileNames) {
+                for (String fileName : nonSequencedFileNames) {
                     if (fileName != null) {
                         System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
@@ -66,9 +66,11 @@ public final class SequenceUtils extends BaseUtils {
             }
 
             DisplayUtils.printAndReset("Falling back to manual sequencing...", true);
-            remainingFileNames = sequenceManually(remainingFileNames);
+            nonSequencedFileNames = sequenceManually(nonSequencedFileNames, true);
 
         } else if (!sequenceExists) { // Case 2: Some files maintain sequence and some don't
+            int idx = 0;
+
             System.out.println("Not all files follow the sequence.");
             Thread.sleep(interval);
 
@@ -78,6 +80,8 @@ public final class SequenceUtils extends BaseUtils {
 
                 for (String fileName : sequencedFileNames) {
                     if (fileName != null) {
+                        combinedFileNames[idx++] = fileName;
+
                         System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
@@ -89,11 +93,13 @@ public final class SequenceUtils extends BaseUtils {
             Thread.sleep(interval);
 
             // Prints the non sequenced files
-            if (remainingFileNames.length > 0) {
+            if (nonSequencedFileNames.length > 0) {
                 System.out.println("\nRemaining unsequenced files:");
 
-                for (String fileName : remainingFileNames) {
+                for (String fileName : nonSequencedFileNames) {
                     if (fileName != null) {
+                        combinedFileNames[idx++] = fileName;
+
                         System.out.printf("   %s. %s\n",
                                 String.format("%02d", ++fileCount),
                                 fileName);
@@ -125,10 +131,15 @@ public final class SequenceUtils extends BaseUtils {
             DisplayUtils.printAndReset(results[choice - 1] + "..", false);
 
             if (choice == 1) {
+                // Setting custom boundaries for manual sequencing
+                // Because the sequenced files will be listed first
+                int upperBound = fileNames.size() - fileCount;
+                int[] bounds = { upperBound, fileNames.size() };
 
+                nonSequencedFileNames = sequenceManually(nonSequencedFileNames, true, bounds);
             } else {
-                remainingFileNames = null;
-                sequencedFileNames = sequenceManually(allFileNames);
+                sequencedFileNames = sequenceManually(combinedFileNames, true);
+                nonSequencedFileNames = null;
             }
 
         } else { // Case 3: All files maintain sequence
@@ -154,24 +165,37 @@ public final class SequenceUtils extends BaseUtils {
          * sequenced file names
          */
         filteredFileName[0] = sequencedFileNames;
-        filteredFileName[1] = remainingFileNames;
+        filteredFileName[1] = nonSequencedFileNames;
 
         return filteredFileName;
     }
 
     // Handles the manual reordering of the unordered file names
-    private static String[] sequenceManually(String[] fileNames) throws InterruptedException {
-        String[] sequencedFileNames = new String[fileNames.length]; // Stores the final sequenced array of filenames
+    private static String[] sequenceManually(String[] fileNames, boolean clearConsole) throws InterruptedException {
+        return sequenceManually(fileNames, clearConsole, null);
+    }
+
+    // V2 - for custom numbering of the filenames
+    private static String[] sequenceManually(
+            String[] fileNames,
+            boolean clearConsole,
+            int[] bounds)
+            throws InterruptedException {
+
+        // Calculating how many files will undergo the process
+        int length = bounds == null ? fileNames.length : bounds[1] - bounds[0];
+
+        String[] sequencedFileNames = new String[length]; // Stores the final sequenced array of filenames
         String[] keywords = { "Skip", "Previous", "Restart", "Merge" }; // Specified keywords for specified actions
 
         String[] inputHistory = new String[fileNames.length]; // Stores user input history
         String prompt = "Please manually review the following files and assign sequence numbers to organize them:";
         boolean firstTime = true;
 
-        traverseFileNames: for (int i = 0; i < fileNames.length; i++) {
+        traverseFileNames: for (int i = 0; i < length; i++) {
             ConsoleUtils.clearConsole();
 
-            if (firstTime)
+            if (firstTime && clearConsole)
                 Thread.sleep(interval);
 
             System.out.println(prompt);
@@ -181,14 +205,14 @@ public final class SequenceUtils extends BaseUtils {
             String fileName = fileNames[i];
 
             if (fileName != null) {
-                if (firstTime)
+                if (firstTime && clearConsole)
                     Thread.sleep(interval);
 
                 firstTime = false;
-                DisplayUtils.printOptions(fileNames.length); // Displays the available actions & options
+                DisplayUtils.printOptions(length); // Displays the available actions & options
 
                 String fileNumber = String.format("%02d", i + 1);
-                String totalFiles = String.format("%02d", fileNames.length);
+                String totalFiles = String.format("%02d", length);
                 String current = "> Current File: \"" + fileName + "\" (File no:" + fileNumber + " of " + totalFiles
                         + ")";
                 System.out.println(current + "\n"); // Displays the current iterative file name and number
@@ -197,11 +221,12 @@ public final class SequenceUtils extends BaseUtils {
                 String choice = InputUtils.getUserChoice(
                         null,
                         null,
-                        fileNames.length,
+                        length,
                         true,
                         false,
                         4,
-                        keywords);
+                        keywords,
+                        bounds);
 
                 try { // Tries to convert the user input into an integer
                     int choiceInt = Integer.parseInt(choice);
@@ -252,7 +277,7 @@ public final class SequenceUtils extends BaseUtils {
                             }
                         }
                         case "restart" -> { // Resets the whole reordering process
-                            return sequenceManually(fileNames);
+                            return sequenceManually(fileNames, false);
                         }
                         case "merge" -> { // Merges multiple files together
 

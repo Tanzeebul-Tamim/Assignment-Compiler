@@ -269,6 +269,24 @@ public final class InputUtils extends BaseUtils {
             NoSuchElementException,
             InterruptedException {
 
+        return getUserChoice(prompt1, prompt2, fileCount, newLine, clearConsole, clearLines, keywords, null, choices);
+    }
+
+    // V2 - for custom upper & lower bounds of choices
+    public static String getUserChoice(
+            String prompt1,
+            String prompt2,
+            int fileCount,
+            boolean newLine,
+            boolean clearConsole,
+            int clearLines,
+            String[] keywords,
+            int[] bounds,
+            String... choices)
+            throws InputMismatchException,
+            NoSuchElementException,
+            InterruptedException {
+
         int choice = 0;
         String input = "";
         clearLines = clearLines == 0 ? 6 : clearLines;
@@ -286,12 +304,23 @@ public final class InputUtils extends BaseUtils {
             }
 
             if (choices.length > 0) {
-                for (int i = 0; i < choices.length; i++) {
-                    String serial = String.format("%02d", i + 1);
-                    System.out.printf("   %s. %s", serial, choices[i]);
+                if (bounds == null) {
+                    for (int i = 0; i < choices.length; i++) {
+                        String serial = String.format("%02d", i + 1);
+                        System.out.printf("   %s. %s", serial, choices[i]);
 
-                    if (i != choices.length - 1) {
-                        System.out.println();
+                        if (i != choices.length - 1) {
+                            System.out.println();
+                        }
+                    }
+                } else {
+                    for (int i = bounds[0]; i < bounds[1]; i++) {
+                        String serial = String.format("%02d", i + 1);
+                        System.out.printf("   %s. %s", serial, choices[i]);
+
+                        if (i != bounds[1] - 1) {
+                            System.out.println();
+                        }
                     }
                 }
             }

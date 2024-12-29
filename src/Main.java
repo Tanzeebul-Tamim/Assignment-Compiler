@@ -4,10 +4,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 import utilities.*;
 
 // Todo: Implement merge files feature
-// Todo: Implement partial sequencing feature when partial sequence detecting
-// Todo: Update readme, add about demo file (add a redirecting link in the doc) and update the prompt instructions
+// Todo: Partial file sequencing bug: when only handling non sequenced files, some of the sequenced files get missing
+// Todo: add interval after assigning sequence to the last file
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         /*
          * Tracks the task sequence-numbers
          * Ensures unique and consistent numbering in the output file.
@@ -17,7 +17,8 @@ public class Main {
         FileUtils fileUtil;
 
         try {
-            DisplayUtils.printTitle();
+            // Todo Uncomment these methods
+            // DisplayUtils.printTitle();
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(
@@ -35,6 +36,20 @@ public class Main {
             if (choice == 1) {
                 // Sets file list sequentially
                 fileUtil.setFileList(SequenceUtils.sequenceFiles(fileUtil.getFileNames()));
+            } else {
+                // Prints the detected sequenced files
+                System.out.println("\nFiles detected:");
+                int fileCount = 0;
+
+                for (String fileName : fileUtil.getFileNames()) {
+                    if (fileName != null) {
+                        System.out.printf("   %s. %s\n",
+                                String.format("%02d", ++fileCount),
+                                fileName);
+                    }
+                }
+
+                ConsoleUtils.pressEnter();
             }
 
             fileUtil.readFiles(); // Reads file contents from the files located in the provided path
@@ -49,7 +64,8 @@ public class Main {
         } catch (Exception err) {
             // Catching other unintentional & unexpected exceptions and terminating the
             // program
-            ConsoleUtils.terminate(false);
+            ConsoleUtils.terminate(false, err);
+            // Todo ConsoleUtils.terminate(false);
 
         } finally {
             // Ensure scanner is closed regardless of termination

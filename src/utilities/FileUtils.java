@@ -191,6 +191,24 @@ public class FileUtils {
         Thread.sleep(BaseUtils.interval);
     }
 
+    // Remove the trailing lines from the content
+    public static void removeTrailingNewlines(StringBuilder content) {
+        int length = content.length();
+
+        // Loop to remove all trailing newlines
+        while (length > 0) {
+            char lastChar = content.charAt(length - 1);
+
+            // Check for newline characters
+            if (lastChar == '\n' || lastChar == '\r') {
+                content.deleteCharAt(length - 1);
+                length--; // Update length after removal
+            } else {
+                break; // Stop if no more trailing newlines
+            }
+        }
+    }
+
     /*
      * Reads all the files (files with valid extension) and builds a string
      * containing the content and stores them for further processing.
@@ -199,10 +217,11 @@ public class FileUtils {
         ConsoleUtils.clearConsole();
 
         Thread.sleep(BaseUtils.interval);
-        System.out.println("\nReading files: ");
+        System.out.println("Reading files: ");
         Thread.sleep(BaseUtils.interval);
 
         int fileCount = 0;
+        boolean success = false;
 
         for (File file : this.fileList) {
             if (file != null) {
@@ -225,23 +244,36 @@ public class FileUtils {
 
                         // Setting task no for each file
                         int taskNumber = this.fileCount.incrementAndGet();
-                        String taskNo = "// TASK " + taskNumber + "\n\n";
+                        String taskNo = "// TASK " + taskNumber + "\n";
 
                         // Building the string that contains the whole content
                         StringBuilder fileContent = new StringBuilder();
                         fileContent.append(taskNo);
 
+                        boolean packageSkipped = false; // Flag to keep track of package statement
+
                         while (fileScanner.hasNextLine()) {
                             String line = fileScanner.nextLine();
 
-                            fileContent
-                                    .append(line)
-                                    .append(System.lineSeparator());
+                            // Skip package statement if not already skipped
+                            if (!packageSkipped && line.startsWith("package")) {
+                                packageSkipped = true; // Mark package statement as skipped
+                                continue;
+                            }
+
+                            // Add content only after skipping the package statement
+                            if (packageSkipped || !line.isEmpty()) {
+                                fileContent
+                                        .append(line)
+                                        .append(System.lineSeparator());
+                            }
                         }
 
-                        fileContent.append("\n\n");
-                        content.append(fileContent);
+                        // Adding line break
+                        fileContent.append(System.lineSeparator()).append(System.lineSeparator());
+                        content.append(fileContent); // Adding file content in the output file
                         fileScanner.close();
+                        success = true;
 
                     } catch (FileNotFoundException err) {
                         System.out.println("Error: The file '" + file.getName()
@@ -250,6 +282,12 @@ public class FileUtils {
                     }
                 }
             }
+        }
+
+        if (success) {
+            removeTrailingNewlines(content);
+        } else {
+            ConsoleUtils.terminate(success);
         }
     }
 
@@ -327,7 +365,7 @@ public class FileUtils {
             System.out.println("File written successfully to: " + outputFile.getAbsolutePath());
 
             System.out.println();
-            Thread.sleep(BaseUtils.interval);            
+            Thread.sleep(BaseUtils.interval);
         } catch (IOException err) {
             DisplayUtils.printError();
         }

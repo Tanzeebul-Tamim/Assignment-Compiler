@@ -57,26 +57,26 @@ public final class DisplayUtils extends BaseUtils {
 
     // Print the filenames being processed
     public static void printFileNames(String[] fileNames, String[] inputHistory) {
-        for (int i = 0; i < fileNames.length;) {
+        for (int i = 0; i < fileNames.length; i++) {
             String fileName = fileNames[i];
             String userInput = inputHistory[i];
 
             if (fileName != null) {
                 if (userInput == null) {
                     System.out.printf("   %s. %s\n",
-                            String.format("%02d", ++i),
+                            String.format("%02d", i + 1),
                             fileName);
                 } else {
                     try {
                         int choiceInt = Integer.parseInt(userInput);
 
                         System.out.printf("   %s. %s -> Assigned: %s\n",
-                                String.format("%02d", ++i),
+                                String.format("%02d", i + 1),
                                 fileName,
                                 String.format("%02d", choiceInt));
                     } catch (NumberFormatException err) {
                         System.out.printf("   %s. %s -> Skipped\n",
-                                String.format("%02d", ++i),
+                                String.format("%02d", i + 1),
                                 fileName);
                     }
                 }
@@ -106,7 +106,7 @@ public final class DisplayUtils extends BaseUtils {
         System.out.println("Options:");
         System.out.printf(" - Enter a sequence number %s to assign to this file.\n", range);
         System.out.println(" - Enter \"Skip\" to exclude this file.");
-        System.out.println(" - Enter \"Previous\" to go back to the previous file.");
+        System.out.println(" - Enter \"Previous\" to go back to the previous file and reassign its sequence number.");
         System.out.println(" - Enter \"Restart\" to restart the sequencing process.");
         System.out.println(" - Enter \"Merge\" to combine this file with the previous file.");
         System.out.println();
@@ -139,7 +139,8 @@ public final class DisplayUtils extends BaseUtils {
     }
 
     // V2 - customizable line parameter, interval time & prints multiple choices
-    public static void printError(String message, int interval, int choices, int clearLines) throws InterruptedException {
+    public static void printError(String message, int interval, int choices, int clearLines)
+            throws InterruptedException {
         clearLines = clearLines == 0 ? 3 : clearLines;
         interval = interval == 0 ? errorInterval : interval;
 
