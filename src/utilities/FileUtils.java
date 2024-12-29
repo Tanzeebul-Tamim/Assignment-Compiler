@@ -195,8 +195,13 @@ public class FileUtils {
      * Reads all the files (files with valid extension) and builds a string
      * containing the content and stores them for further processing.
      */
-    public void readFiles() {
+    public void readFiles() throws InterruptedException {
+        ConsoleUtils.clearConsole();
+
+        Thread.sleep(BaseUtils.interval);
         System.out.println("\nReading files: ");
+        Thread.sleep(BaseUtils.interval);
+
         int fileCount = 0;
 
         for (File file : this.fileList) {
@@ -215,6 +220,8 @@ public class FileUtils {
                         System.out.printf("   %s. Added content from: '%s'\n",
                                 String.format("%02d", ++fileCount),
                                 file.getName());
+
+                        Thread.sleep(100);
 
                         // Setting task no for each file
                         int taskNumber = this.fileCount.incrementAndGet();

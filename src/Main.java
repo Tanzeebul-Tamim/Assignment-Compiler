@@ -17,7 +17,7 @@ public class Main {
         FileUtils fileUtil;
 
         try {
-            DisplayUtils.printTitle();
+            // DisplayUtils.printTitle();
             InputUtils.collectInputs();
 
             fileUtil = new FileUtils(

@@ -17,6 +17,7 @@ This project provides a utility to compile multiple assignment files into a sing
 - [Project Features](#project-features)
 - [Installation](#installation)
 - [Running the Program](#running-the-program)
+- [Testing with Demo Files](#testing-with-demo-files)
 - [Demo Output File Example](#demo-output-file-example)
 - [Contributing](#contributing)
 - [License](#license)
@@ -45,7 +46,10 @@ This project is currently a local utility tool and does not have a live deployme
 - JDK 11 or higher
 - A text editor or IDE (e.g., IntelliJ IDEA, Eclipse, Visual Studio Code)
 
+<br>
+
 ---
+
 <details>
 <summary><h2 id="project-features">Project Features</h2></summary>
 
@@ -73,7 +77,13 @@ This project is currently a local utility tool and does not have a live deployme
 
 - **_Automated Task Sequence Detection:_** Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
 
+- **_Manual Task Sequence Detection:_** If the program fails to detect a proper sequence or if your files are not named consistently, you’ll be prompted to manually provide the correct sequence for each file. This ensures that the tasks are ordered correctly before generating the final output.
+
+- **_Combining Multiple Files as One Task:_** The program also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
+
 - **_Error Handling:_** Validates input files to ensure they exist and are formatted correctly.
+
+- **_Empty Directory Detection:_** The program can detect and reject empty directories if provided, ensuring only valid directories containing files are processed.
 
 - **_Handling Files with the Same Name:_** If a file with the same name already exists in the directory, the program provides 3 options to the user:
 
@@ -87,6 +97,7 @@ This project is currently a local utility tool and does not have a live deployme
 </details>
 
 ---
+
 <details>
   <summary><h2 id="installation">Installation</h2></summary>
 
@@ -110,6 +121,7 @@ This project is currently a local utility tool and does not have a live deployme
    </details>
 
 ---
+
 <details>
   <summary><h2 id="running-the-program">Running the Program</h2></summary>
 
@@ -129,14 +141,17 @@ This project is currently a local utility tool and does not have a live deployme
 
     When you run the program, you’ll be guided through several input steps. Here's what to expect:
 
-    - **Enter Your Name:**  
-      You’ll be asked to input your name. The program automatically corrects improper naming conventions. For example, if you enter something like `tANzEEBuL       tAMiM    `, it will be converted to the proper format: `Tanzeebul Tamim`.
+    - **Enter the Assignment Number:**  
+      You’ll be asked to input the assignment number, such as `3` for Assignment 03. The program supports assignment numbers ranging from `1` to `15`. Make sure to input a valid number within this range.
 
     - **Enter Your ID:**  
       You’ll then be prompted to enter your 8-digit student ID (e.g., `24100000`). The program verifies the ID to ensure a valid ID is provided.
 
-    - **Enter the Assignment Number:**  
-      You’ll be asked to input the assignment number, such as `3` for Assignment 03. The program supports assignment numbers ranging from `1` to `15`. Make sure to input a valid number within this range.
+    - **Enter Your Name:**  
+      You’ll be then asked to input your name. The program automatically corrects improper naming conventions. For example, if you enter something like `tANzEEBuL       tAMiM    `, it will be converted to the proper format: `Tanzeebul Tamim`.
+
+    - **Enter the File Extension:**  
+      The program requires you to specify the desired file extension (e.g., `java`, `py`, `cpp`) to filter out unsupported or irrelevant files. It validates your input to ensure it matches one of the supported extensions and rejects any invalid or unsupported file types.
 
     - **Enter the Path to Your Assignment Folder:**  
        The program requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
@@ -164,34 +179,73 @@ This project is currently a local utility tool and does not have a live deployme
 
       After copying the path, paste it directly into the program's terminal/console.
 
+    - **Sequencing Options:**  
+      At the start, you’ll be asked if you want to sequence or reorder your files:
+
+      - **If you choose "Yes"**: The program will detect any existing sequence:
+
+        - If all files are sequentially named (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02`), it will use this order.
+        - If no sequence is found, you’ll be prompted to manually assign a sequence number to each file.
+        - If some files have sequence numbers and others don’t, you’ll decide whether to resequence all files or only the ones without a sequence.
+
+      - **If you choose "No"**: The program will generate the output using the file sequence as found in the file explorer.
+
+      - **Combining Multiple Files as One Task**: If you have related files that should be treated as part of the same task, the program allows you to group them together, and they will be counted as a single task in the final output file.
+
     - **Important Considerations for File Organization:**  
-      When using the Assignment Compiler, it’s crucial to ensure your files are properly organized before you input the directory path. Here’s a breakdown of the key points:
+      Before using the Assignment Compiler, ensure your files are properly organized for smooth processing. Here’s what to keep in mind:
 
-      1.  **Dedicated Folder for Assignment Files:**  
-          Place all your assignment files in a single, dedicated folder. Avoid including unrelated files such as documents, images, or irrelevant executables in the same directory. This helps the program focus only on the relevant files and prevents unnecessary processing errors.
+      1. **Dedicated Folder for Assignment Files:**  
+         Place all assignment-related files in a single folder. Avoid including unrelated files (e.g., images, documents) to prevent unnecessary errors.
 
-      2.  **Verify File Relevance:**  
-          Double-check that all the files in the folder are part of your assignment. This reduces the risk of mistakenly including irrelevant or incomplete files in the output.
+      2. **Verify File Relevance:**  
+         Double-check that all the files in the folder are part of your assignment. This reduces the risk of mistakenly including irrelevant or incomplete files in the output.
 
-      3.  **File Naming Sequence:**  
-          For best results, name your files in a sequential order, such as:
+      3. **File Naming Conventions:**  
+         For best results, use a consistent naming pattern like:
 
-          - `Task-01`, `Task-02`, etc.
-          - Or `task1`, `task2`, etc.
-          - Even `Task_01`, `Task_02` works.
+         - `Task-01`, `Task-02`, or
+         - `task1`, `task2`, or
+         - `Task_01`, `Task_02`.
 
-          This naming convention allows the program to automatically detect the correct order of tasks.
+         This naming convention allows the program to automatically detect the correct order of tasks.
 
-      4.  **Manual Sequencing (If Needed):**  
-          If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
+      4. **Manual Sequencing (If Needed):**  
+         If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
 
-          > **Note:** In the OOP tasks assigned by our university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
+         > **Note:** In the OOP tasks assigned by BRAC university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
 
 Following these steps will ensure a smooth file compilation process.
 
 </details>
 
 ---
+
+<details>
+  <summary><h2 id="testing-with-demo-files">Testing with Demo Files</h2></summary>
+
+To help you test the program, a [**`Demo Folder`**](./demo) is included in the root directory.
+
+**Demo Folder Contents:**
+It contains:
+
+- Sample files with supported extensions and various naming formats (e.g., [**`Task1.java`**](./demo/Task1.java), [**`task_03.java`**](./demo/task_03.java), [**`task__7.java`**](./demo/task__7.java)) to showcase the program's ability to detect sequences in different naming formats.
+- Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./demo/NonSequenced.java), [**`Unsequenced.java`**](./demo/Unsequenced.java)).
+- Files with unsupported extensions (e.g., [**`Unsupported.py`**](./demo/Unsupported.py), [**`Unsupported.ts`**](./demo/Unsupported.ts), [**`Unsupported.txt`**](./demo/Unsupported.txt)).
+  > **Note:** Some files have supported extensions but are demonstrated as unsupported in the `Demo Folder` to illustrate that the `Demo Folder` is specifically designed for testing _**Java Files**_ as the desired file type.
+
+**How to Use the Demo Folder:**
+
+1. Navigate to the [**Demo Folder**](./demo) folder in the root directory.
+2. Copy the path to the **Demo Folder** folder and paste it when prompted during program execution.
+3. Test the program's functionality with the pre-included sample files to familiarize yourself with its features.
+
+Feel free to modify or add your own files to the **Demo Folder** to test with your own files.
+
+</details>
+
+---
+
 <details>
   <summary><h2 id="demo-output-file-example">Demo Output File Example</h2></summary>
 
