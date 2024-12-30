@@ -38,10 +38,10 @@ This project is currently a local utility tool and does not have a live deployme
   - **_`java.util.concurrent.atomic.AtomicInteger`_**: For thread-safe counting of task numbers during file processing.
 
 - **_OOP Design Patterns_**: <br>
-Encapsulated file handling and processing logic for clean and modular code.
+  Encapsulated file handling and processing logic for clean and modular code.
 
 - **_Command-Line Interface (CLI)_**: <br>
-Provides a simple interface to interact with the tool.
+  Provides a simple interface to interact with the tool.
 
 ## Prerequisites
 
@@ -56,16 +56,16 @@ Provides a simple interface to interact with the tool.
 <summary><h2 id="project-features">Project Features</h2></summary>
 
 - **_File Compilation:_** <br>
-Combines multiple assignment files into a single `.txt` file with proper formatting. Each task is separated by comments like `// TASK 1`, `// TASK 2`.
+  Combines multiple assignment files into a single `.txt` file with proper formatting. Each task is separated by comments like `// TASK 1`, `// TASK 2`.
 
 - **_Input Flexibility:_** <br>
-The program allows you to specify which files to include in the compiled document.
+  The program allows you to specify which files to include in the compiled document.
 
 - **_Automated Naming Convention:_** <br>
-Automatically names the output file using a standard format (`Assignment XX_Your-ID_Your-Name.txt`).
+  Automatically names the output file using a standard format (`Assignment XX_Your-ID_Your-Name.txt`).
 
 - **_File Type Support:_** <br>
-Supports multiple file extensions, including Java, Python, C, C++, HTML, CSS, JavaScript, TypeScript, and others. You can modify the supported file extensions directly in the code. The current supported extensions are:
+  Supports multiple file extensions, including Java, Python, C, C++, HTML, CSS, JavaScript, TypeScript, and others. You can modify the supported file extensions directly in the code. The current supported extensions are:
 
   - js
   - ts
@@ -80,35 +80,35 @@ Supports multiple file extensions, including Java, Python, C, C++, HTML, CSS, Ja
   - cs
 
 - **_Subdirectory Handling:_** <br>
-The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
+  The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main/root directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
 
 - **_Automated Task Sequence Detection:_** <br>
-Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
+  Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
 
 - **_Manual Task Sequence Detection:_** <br>
-If the program fails to detect a proper sequence or if your files are not named consistently, you’ll be prompted to manually provide the correct sequence for each file. This ensures that the tasks are ordered correctly before generating the final output.
+  If the program fails to detect a proper sequence or if your files are not named consistently, you’ll be prompted to manually provide the correct sequence for each file. This ensures that the tasks are ordered correctly before generating the final output.
 
 - **_Combining Multiple Files as One Task:_** <br>
-The program also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
+  The program also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
 
 - **_Removing `package` Statements:_** <br>
-The program automatically detects and removes `package` statements from the top of Java files. If a `package` statement is present, it is excluded from the generated output, ensuring that the file content starts immediately from the next statement, with trailing blank lines removed for a clean format.
+  The program automatically detects and removes `package` statements from the top of Java files. If a `package` statement is present, it is excluded from the generated output, ensuring that the file content starts immediately from the next statement, with trailing blank lines removed for a clean format.
 
 - **_Error Handling:_** <br>
-Validates input files to ensure they exist and are formatted correctly.
+  Validates input files to ensure they exist and are formatted correctly.
 
 - **_Empty Directory Detection:_** <br>
-The program can detect and reject empty directories if provided, ensuring only valid directories containing files are processed.
+  The program can detect and reject empty directories if provided, ensuring only valid directories containing files are processed.
 
 - **_Handling Files with the Same Name:_** <br>
-If a file with the same name already exists in the directory, the program provides 3 options to the user:
+  If a file with the same name already exists in the directory, the program provides 3 options to the user:
 
   - **_Overwrite:_** Replace the existing file with the new one.
   - **_Create New Version:_** Generate a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
   - **_Skip:_** Skip the current file writing operation entirely.
 
 - **_Tailored for BRAC University:_** <br>
-Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
+  Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
 
 - **_Future GUI Support:_** <br>
 Plans for a graphical user interface to simplify the process further.
@@ -159,20 +159,20 @@ Plans for a graphical user interface to simplify the process further.
 
     When you run the program, you’ll be guided through several input steps. Here's what to expect:
 
-    - **_Enter the Assignment Number_:**  <br>
+    - **_Enter the Assignment Number_:** <br>
       You’ll be asked to input the assignment number, such as `3` for Assignment 03. The program supports assignment numbers ranging from `1` to `15`. Make sure to input a valid number within this range.
 
-    - **_Enter Your ID_:**  <br>
+    - **_Enter Your ID_:** <br>
       You’ll then be prompted to enter your 8-digit student ID (e.g., `24100000`). The program verifies the ID to ensure a valid ID is provided.
 
-    - **_Enter Your Name_:**  <br>
+    - **_Enter Your Name_:** <br>
       You’ll be then asked to input your name. The program automatically corrects improper naming conventions. For example, if you enter something like `tANzEEBuL       tAMiM    `, it will be converted to the proper format: `Tanzeebul Tamim`.
 
-    - **_Enter the File Extension_:**  <br>
+    - **_Enter the File Extension_:** <br>
       The program requires you to specify the desired file extension (e.g., `java`, `py`, `cpp`) to filter out unsupported or irrelevant files. It validates your input to ensure it matches one of the supported extensions and rejects any invalid or unsupported file types.
 
-    - **_Enter the Path to Your Assignment Folder_:**  <br>
-       The program requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
+    - **_Enter the Path to Your Assignment Folder_:** <br>
+      The program requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
 
       <h4><i>Windows:</i></h4>
       <img align=center src="./public/windows-copy-path.jpg" alt="Windows Screenshot" width="500px">
@@ -197,32 +197,42 @@ Plans for a graphical user interface to simplify the process further.
 
       After copying the path, paste it directly into the program's terminal/console.
 
-    - **_Sequencing Options_:**  <br>
+    - **_Sequencing Options_:** <br>
       At the start, you’ll be asked if you want to sequence or reorder your files:
 
       - **_If you choose "Yes"_:** <br>
-      The program will detect any existing sequence:
+        The program will detect any existing sequence: <br>
 
         - If all files are sequentially named (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02`), it will use this order.
         - If no sequence is found, you’ll be prompted to manually assign a sequence number to each file.
         - If some files have sequence numbers and others don’t, you’ll decide whether to resequence all files or only the ones without a sequence.
 
+        - **_While manually sequencing:_** <br>
+          You can choose from the following options for each file: <br>
+          - **_Enter a sequence number:_** <br>
+            Assigns a sequence number (within the allowed range) to the file.
+          - **_Enter "Skip":_** <br>
+            Excludes the file from the sequence & the generated output file.
+          - **_Enter "Previous":_** <br>
+            Goes back to the previous file and lets you reassign its sequence number.
+          - **_Enter "Reset":_** <br>
+            Restarts the sequencing process for all files.
+          - **_Enter "Merge":_** <br>
+            Combines the current file with one or more selected files. If you have related files that should be treated as part of the same task, the program allows you to group them together, and they will be counted as a single task in the final output file.
+
       - **_If you choose "No"_:** <br>
-      The program will generate the output using the file sequence as found in the file explorer.
+        The program will generate the output using the file sequence as found in the file explorer.
 
-      - **_Combining Multiple Files as One Task_:** <br>
-      If you have related files that should be treated as part of the same task, the program allows you to group them together, and they will be counted as a single task in the final output file.
-
-    - **_Important Considerations for File Organization_:**  <br>
+    - **_Important Considerations for File Organization_:** <br>
       Before using the Assignment Compiler, ensure your files are properly organized for smooth processing. Here’s what to keep in mind:
 
-      1. **_Dedicated Folder for Assignment Files_:**  <br>
+      1. **_Dedicated Folder for Assignment Files_:** <br>
          Place all assignment-related files in a single folder. Avoid including unrelated files (e.g., images, documents) to prevent unnecessary errors.
 
-      2. **_Verify File Relevance_:**  <br>
+      2. **_Verify File Relevance_:** <br>
          Double-check that all the files in the folder are part of your assignment. This reduces the risk of mistakenly including irrelevant or incomplete files in the output.
 
-      3. **_File Naming Conventions_:**  <br>
+      3. **_File Naming Conventions_:** <br>
          For best results, use a consistent naming pattern like:
 
          - `Task-01`, `Task-02`, or
@@ -231,11 +241,11 @@ Plans for a graphical user interface to simplify the process further.
 
          This naming convention allows the program to automatically detect the correct order of tasks.
 
-      4. **_Manual Sequencing (If Needed)_:**  <br>
+      4. **_Manual Sequencing (If Needed)_:** <br>
          If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
 
          > **_Note_:** <br>
-         In the OOP tasks assigned by BRAC university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
+         > In the OOP tasks assigned by BRAC university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
 
 Following these steps will ensure a smooth file compilation process.
 
@@ -254,7 +264,7 @@ To help you test the program, a [**`Sample Folder`**](./sample) is included in t
 - Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./sample/NonSequenced.java), [**`Unsequenced.java`**](./sample/Unsequenced.java)).
 - Files with unsupported extensions (e.g., [**`Unsupported.py`**](./sample/Unsupported.py), [**`Unsupported.ts`**](./sample/Unsupported.ts), [**`Unsupported.txt`**](./sample/Unsupported.txt)), [**`Unsupported.ipynb`**](./sample/Unsupported.ipynb)).
   > **_Note:_** <br>
-  Some files have supported extensions but are demonstrated as unsupported in the `Sample Folder` to illustrate that the `Sample Folder` is specifically designed for testing _**Java Files**_ as the desired file type.
+  > Some files have supported extensions but are demonstrated as unsupported in the `Sample Folder` to illustrate that the `Sample Folder` is specifically designed for testing _**Java Files**_ as the desired file type.
 - Two generated output files:
   - [**`Assignment 05_24100000_Joe Brooks.txt`**](./sample/Assignment%2005_24100000_Joe%20Brooks.txt)
   - [**`Assignment 05_24100000_Joe Brooks(1).txt`**](<./sample/Assignment%2005_24100000_Joe%20Brooks(1).txt>)  
