@@ -59,7 +59,7 @@ This project is currently a local utility tool and does not have a live deployme
   Combines multiple assignment files into a single `.txt` file with proper formatting. Each task is separated by comments like `// TASK 1`, `// TASK 2`.
 
 - **_Input Flexibility:_** <br>
-  The program allows you to specify which files to include in the compiled document.
+  Allows you to specify which files to include in the compiled document.
 
 - **_Automated Naming Convention:_** <br>
   Automatically names the output file using a standard format (`Assignment XX_Your-ID_Your-Name.txt`).
@@ -80,32 +80,32 @@ This project is currently a local utility tool and does not have a live deployme
   - cs
 
 - **_Subdirectory Handling:_** <br>
-  The program can process files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main/root directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
+  Processes files in subdirectories, making it easier to handle projects with complex folder structures. However, it is **highly recommended** to keep all files in the main/root directory of the provided path, as issues might occur if files are spread across multiple subdirectories.
 
 - **_Automated Task Sequence Detection:_** <br>
   Automatically detects numbered task sequences (e.g., `Task 1`, `Task 2` or `task1`, `task2` or `Task-01`, `Task-02` etc.) from file names. If the sequence is not in order, you can manually input or reorder the tasks in the correct sequence.
 
 - **_Manual Task Sequence Detection:_** <br>
-  If the program fails to detect a proper sequence or if your files are not named consistently, you’ll be prompted to manually provide the correct sequence for each file. This ensures that the tasks are ordered correctly before generating the final output.
+  If fails to detect a proper sequence or if your files are not named consistently, you’ll be prompted to manually provide the correct sequence for each file. This ensures that the tasks are ordered correctly before generating the final output.
 
 - **_Combining Multiple Files as One Task:_** <br>
-  The program also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
+  Also allows you to combine multiple files into a single task in the generated output. If you have related files that should be considered part of the same task, you can group them together, and they will be treated as one task in the final document.
 
 - **_Removing `package` Statements:_** <br>
-  The program automatically detects and removes `package` statements from the top of Java files. If a `package` statement is present, it is excluded from the generated output, ensuring that the file content starts immediately from the next statement, with trailing blank lines removed for a clean format.
+  Automatically detects and removes `package` statements from the top of Java files. If a `package` statement is present, it is excluded from the generated output, ensuring that the file content starts immediately from the next statement, with trailing blank lines removed for a clean format.
 
 - **_Error Handling:_** <br>
   Validates input files to ensure they exist and are formatted correctly.
 
 - **_Empty Directory Detection:_** <br>
-  The program can detect and reject empty directories if provided, ensuring only valid directories containing files are processed.
+  Detects and rejects empty directories if provided, ensuring only valid directories containing files are processed.
 
 - **_Handling Files with the Same Name:_** <br>
-  If a file with the same name already exists in the directory, the program provides 3 options to the user:
+  Provides 3 options to the user if a file with the same name already exists in the directory :
 
-  - **_Overwrite:_** Replace the existing file with the new one.
-  - **_Create New Version:_** Generate a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
-  - **_Skip:_** Skip the current file writing operation entirely.
+  - **_Overwrite:_** Replaces the existing file with the new one.
+  - **_Create New Version:_** Generates a new version of the file with a suffix like `(1)`, `(2)`, etc., appended to its name.
+  - **_Skip:_** Skips the current file writing operation entirely.
 
 - **_Tailored for BRAC University:_** <br>
   Specifically designed to assist students in BRAC University's **CSE111 - Programming Language II** course. The utility simplifies the task of combining multiple assignment files into the `.txt` format, which is the only valid and accepted format for assignment submissions in this course.
@@ -169,10 +169,10 @@ Plans for a graphical user interface to simplify the process further.
       You’ll be then asked to input your name. The program automatically corrects improper naming conventions. For example, if you enter something like `tANzEEBuL       tAMiM    `, it will be converted to the proper format: `Tanzeebul Tamim`.
 
     - **_Enter the File Extension_:** <br>
-      The program requires you to specify the desired file extension (e.g., `java`, `py`, `cpp`) to filter out unsupported or irrelevant files. It validates your input to ensure it matches one of the supported extensions and rejects any invalid or unsupported file types.
+      Requires you to specify the desired file extension (e.g., `java`, `py`, `cpp`) to filter out unsupported or irrelevant files. It validates your input to ensure it matches one of the supported extensions and rejects any invalid or unsupported file types.
 
     - **_Enter the Path to Your Assignment Folder_:** <br>
-      The program requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
+      Requires the folder path where your assignment files are stored. You can copy the file path directly from your file explorer:
 
       <h4><i>Windows:</i></h4>
       <img align=center src="./public/windows-copy-path.jpg" alt="Windows Screenshot" width="500px">
@@ -218,10 +218,10 @@ Plans for a graphical user interface to simplify the process further.
           - **_Enter "Reset":_** <br>
             Restarts the sequencing process for all files.
           - **_Enter "Merge":_** <br>
-            Combines the current file with one or more selected files. If you have related files that should be treated as part of the same task, the program allows you to group them together, and they will be counted as a single task in the final output file.
+            Combines the current file with one or more selected files. Allows you to group related files together that should be treated as part of the same task, and they will be counted as a single task in the final output file.
 
       - **_If you choose "No"_:** <br>
-        The program will generate the output using the file sequence as found in the file explorer.
+        Generates the output using the file sequence as found in the file explorer.
 
     - **_Important Considerations for File Organization_:** <br>
       Before using the Assignment Compiler, ensure your files are properly organized for smooth processing. Here’s what to keep in mind:
@@ -242,10 +242,10 @@ Plans for a graphical user interface to simplify the process further.
          This naming convention allows the program to automatically detect the correct order of tasks.
 
       4. **_Manual Sequencing (If Needed)_:** <br>
-         If your files are not named sequentially or don’t follow a consistent pattern, the program will prompt you to manually arrange the task order. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
+         Prompts you to manually arrange the task order if your files are not named sequentially or don’t follow a consistent pattern. This ensures that your final output file is properly structured, sequenced, and adheres to the assignment submission requirements.
 
          > **_Note_:** <br>
-         > In the OOP tasks assigned by BRAC university, class names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
+         > In the OOP tasks assigned by BRAC university, class-names often don’t follow any naming sequence. Instead, they use random names that are relevant to the task (e.g., `Circle`, `Employee`, `BankAccount`). This makes manual sequencing especially important to ensure that the tasks are arranged correctly before generating the output file.
 
 Following these steps will ensure a smooth file compilation process.
 
