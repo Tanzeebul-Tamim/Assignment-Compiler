@@ -261,7 +261,7 @@ To help you test the program, a [**`Sample Folder`**](./sample) is included in t
 **_Sample Folder Contents:_** <br>
 
 - Sample files with supported extensions and various naming formats (e.g., [**`Task1.java`**](./sample/Task1.java), [**`task_03.java`**](./sample/task_03.java), [**`task__7.java`**](./sample/task__7.java)) to showcase the program's ability to detect sequences in different naming formats.
-- Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./sample/NonSequenced.java), [**`Unsequenced.java`**](./sample/Unsequenced.java)).
+- Files without any numeric sequence to demonstrate how the program prompts for manual sequencing (e.g., [**`NonSequenced.java`**](./sample/NonSequenced.java), [**`Unsequenced.java`**](./sample/Unsequenced.java), [**`No_Sequence.java`**](./sample/No_Sequence.java), [**`Not_Sequenced.java`**](./sample/Not_Sequenced.java)).
 - Files with unsupported extensions (e.g., [**`Unsupported.py`**](./sample/Unsupported.py), [**`Unsupported.ts`**](./sample/Unsupported.ts), [**`Unsupported.txt`**](./sample/Unsupported.txt)), [**`Unsupported.ipynb`**](./sample/Unsupported.ipynb)).
   > **_Note:_** <br>
   > Some files have supported extensions but are demonstrated as unsupported in the `Sample Folder` to illustrate that the `Sample Folder` is specifically designed for testing _**Java Files**_ as the desired file type.

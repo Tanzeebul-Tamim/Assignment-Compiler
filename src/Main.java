@@ -3,9 +3,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import utilities.*;
 
-// Todo: Implement merge files feature
-// Todo: Partial file sequencing bug: when only handling non sequenced files, some of the sequenced files get missing
-// Todo: add interval after assigning sequence to the last file
 public class Main {
     public static void main(String[] args) throws Exception {
         /*
@@ -23,7 +20,7 @@ public class Main {
 
             fileUtil = new FileUtils(
                     InputUtils.fileList,
-                    InputUtils.folderPath,
+                    InputUtils.folderPath,ls
                     InputUtils.getFileName(),
                     InputUtils.fileExtension,
                     taskSequenceTracker);
@@ -59,7 +56,7 @@ public class Main {
             DisplayUtils.printOutro();
 
         } catch (NoSuchElementException | InterruptedException err) {
-            // Catching NoSuchElementException when user presses Ctrl+C to terminate the
+            // Catching NoSuchElementException when user presses `Ctrl+C` to terminate the
             // program
             ConsoleUtils.terminate(true);
 

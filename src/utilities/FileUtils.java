@@ -123,6 +123,10 @@ public class FileUtils {
                         traverseAndMatchFiles(file.listFiles(), fileNames, container);
                     } else {
                         // Adds the file sequentially to the final (container) array if name matches
+                        if (fileName.contains("|")) {
+                            
+                        }
+
                         if (file.getName().equals(fileName)) {
                             container[index++] = file;
                             break;

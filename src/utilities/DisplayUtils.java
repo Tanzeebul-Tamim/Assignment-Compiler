@@ -56,13 +56,13 @@ public final class DisplayUtils extends BaseUtils {
     }
 
     // Print the filenames being processed
-    public static void printFileNames(String[] fileNames, String[] inputHistory) {
+    public static void printFileNames(String[] fileNames, String[] inputHistory, boolean merge) {
         for (int i = 0; i < fileNames.length; i++) {
             String fileName = fileNames[i];
             String userInput = inputHistory[i];
 
             if (fileName != null) {
-                if (userInput == null) {
+                if (userInput == null) { // Prints file-names sequentially
                     System.out.printf("   %s. %s\n",
                             String.format("%02d", i + 1),
                             fileName);
@@ -70,14 +70,32 @@ public final class DisplayUtils extends BaseUtils {
                     try {
                         int choiceInt = Integer.parseInt(userInput);
 
-                        System.out.printf("   %s. %s -> Assigned: %s\n",
-                                String.format("%02d", i + 1),
-                                fileName,
-                                String.format("%02d", choiceInt));
+                        if (merge) { // Prints file-names that has been selected for merging
+                            System.out.printf("   %s. %s -> Merged\n",
+                                    String.format("%02d", i + 1),
+                                    fileName);
+                        } else { // Prints file-names that has been assigned a sequence number
+                            System.out.printf("   %s. %s -> Assigned: %s\n",
+                                    String.format("%02d", i + 1),
+                                    fileName,
+                                    String.format("%02d", choiceInt));
+                        }
+
                     } catch (NumberFormatException err) {
-                        System.out.printf("   %s. %s -> Skipped\n",
-                                String.format("%02d", i + 1),
-                                fileName);
+                        if (userInput.contains("|")) {
+                            String[] file_names = userInput.split("|");
+
+                            int count = 0;
+                            for (String file_name : file_names) { // Prints file-names that has been merged
+                                System.out.printf("   %s. %s -> Merged\n",
+                                        String.format("%02d", i + 1 + count++),
+                                        file_name);
+                            }
+                        } else { // Prints filenames that has been skipped
+                            System.out.printf("   %s. %s -> Skipped\n",
+                                    String.format("%02d", i + 1),
+                                    fileName);
+                        }
                     }
                 }
             }
@@ -85,9 +103,10 @@ public final class DisplayUtils extends BaseUtils {
     }
 
     // Print user prompts to guide the user
-    public static void printOptions(int optionCount) {
+    public static void printOptions(int optionCount, boolean merge) {
         String range;
 
+        // Mechanism for printing the valid bounds for the files
         if (optionCount > 4) {
             range = "(1-" + optionCount + ")";
 
@@ -104,11 +123,24 @@ public final class DisplayUtils extends BaseUtils {
         }
 
         System.out.println("Options:");
-        System.out.printf(" - Enter a sequence number %s to assign to this file.\n", range);
-        System.out.println(" - Enter \"Skip\" to exclude this file.");
-        System.out.println(" - Enter \"Previous\" to go back to the previous file and reassign its sequence number.");
-        System.out.println(" - Enter \"Reset\" to reset the sequencing process.");
-        System.out.println(" - Enter \"Merge\" to combine this file with the previous file.");
+
+        if (merge) {
+            System.out.printf(" - Enter a sequence number %s to choose a file to merge with the current file.\n",
+                    range);
+            System.out.println(" - Enter \"Revert\" to undo your last choice.");
+            System.out.println(" - Enter \"Reset\" to restart the merging process for the focused file.");
+            System.out.println(" - Enter \"Abort\" to cancel the entire merging process.");
+            System.out.println(" - Enter \"Finish\" to complete the merging process.");
+        } else {
+            System.out.printf(" - Enter a sequence number %s to assign to this file.\n", range);
+            System.out.println(" - Enter \"Skip\" to exclude this file.");
+            System.out
+                    .println(" - Enter \"Previous\" to go back to the previous file and reassign its sequence number.");
+            System.out.println(" - Enter \"Reset\" to restart the sequencing process.");
+            // Todo: Merge - System.out.println(" - Enter \"Merge\" to combine this file with the previous file.");
+
+        }
+
         System.out.println();
     }
 
@@ -162,7 +194,7 @@ public final class DisplayUtils extends BaseUtils {
 
         ConsoleUtils.clearConsole();
         System.out.println(message);
-        Thread.sleep(interval); // Wait for 'waitTime' seconds
+        Thread.sleep(interval); // Waits for 'interval' seconds
         ConsoleUtils.clearConsole();
     }
 
@@ -173,13 +205,13 @@ public final class DisplayUtils extends BaseUtils {
 
     // Print a prompt for selecting multiple input options, also prints new line
     public static void choiceCountLoop(int choiceCount, boolean newLine) {
-        if (choiceCount > 4) {
+        if (choiceCount > 4) { // Prints only the upper and lower bounds of the choices
             System.out.printf("(1-%d): ", choiceCount);
 
             if (newLine)
                 System.out.println();
 
-        } else {
+        } else { // Prints all the options if there're 4 or less than 4 choices
             for (int i = 1; i <= choiceCount; i++) {
                 if (i == 1) {
                     System.out.print("(");
